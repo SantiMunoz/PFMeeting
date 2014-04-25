@@ -1,0 +1,187 @@
+html{
+	 height: 100%;
+}
+body {
+     padding: 0;
+    margin: 0;
+  padding-top: 70px;
+   height: 100%;
+
+}
+a{
+	text-decoration:none;
+	color:#333;
+}
+a:hover{text-decoration: none ; color:#333;}
+#header-rigth {
+	width:35%;
+	float: right;
+}
+#header-left{
+	width:65%;
+	float: left;
+}
+
+#header-button{
+	position: relative;
+	float: right;
+
+}
+.new-meeting{
+	position: relative;
+	top: 8px;
+	margin-right: 0;
+	margin-left: 15px;
+	float: right;
+}
+
+
+#title-wraper{
+	font-size: 35px;
+	height: 40px;
+
+}
+
+#description-wraper{
+	
+	font-size: 20px;
+
+}
+
+.edit{
+	display: none;
+
+}
+div.editing .edit{
+	display: block;
+
+
+}
+
+div.editing .view{
+	display: none;
+	}
+
+.date-wraper{
+	
+	
+	margin-top: 25px;
+}
+
+#agenda{
+	margin-top:35px;
+}
+
+#points{
+
+max-width:800px;
+padding-bottom: 30px;
+
+
+
+}
+#points accordion{
+	padding-top:10px;
+
+
+}
+
+#points li{
+	margin-top:5px;
+	cursor: move; 
+}
+
+button {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: none;
+	font-size: 100%;
+	vertical-align: baseline;
+	font-family: inherit;
+	color: inherit;
+	-webkit-appearance: none;
+	-ms-appearance: none;
+	-o-appearance: none;
+	appearance: none;
+
+}
+
+#points li button{
+	
+	margin-right: 20px;
+}
+#points li i{
+	cursor:hand;
+	cursor:pointer;
+}
+
+span.pointDuration{
+	padding: right;
+}
+textarea {
+    width  : 100%;
+    height : 100%;
+    border : 1px solid #EEE;
+}
+
+#submitComment {
+	margin-left: 50%;
+	margin-right: 50%;
+}
+
+#submitComment span.glyphicon-ok-circle{
+	font-size: 1.8em;
+}
+
+#timeProgressbar{
+	margin-bottom: -30px;
+	margin-right: -15px;
+	margin-left: -15px;
+	margin-top: -10px;
+}
+
+#timeProgressbar .progress-bar{
+	height:35%;
+
+}
+
+#controlButtons{
+
+	margin-left: 45%;
+
+}
+#playPause{
+	float:left;
+}
+#stop{
+	float:left;
+}
+.controlButtons{
+	
+	font-size: 300%;
+	display:none;
+
+}
+
+.show{
+	display:block;
+
+}
+
+#timer{
+
+margin-left: 35%;
+
+}
+
+#acta{
+text-align:center;
+
+}
+
+#pdfCanvas{
+border:1px solid black;
+
+
+}

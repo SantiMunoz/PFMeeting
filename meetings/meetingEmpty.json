@@ -1,0 +1,9 @@
+{ "meetingId":null,
+  "title":"",
+  "date":0,
+  "description": "",
+  "agenda":[],
+  "init":0,
+  "pauseDate": 0,
+  "status":""
+}

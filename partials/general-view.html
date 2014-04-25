@@ -1,0 +1,117 @@
+<div class="cont"> 
+<div id="alertReqDiv" class="alert alert-warning alert-dismissable fade in">
+  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+  <a  id="linkNotiPerm" href="" class="alert-link">Please click here to activate Notifications</a>
+</div>
+  <div id="meetingOk">
+   <div id="title-wraper"> 
+    <div id="title" ng-class="{editing: onFocusTitle}" >
+
+        <div class="view">
+          
+          <label ng-click="saveOldData('title')"><a href="">{{meeting.title}}</a></label>
+
+        </div>
+        <form ng-submit="doneEditing('title')">
+          <input class="edit" placeholder="Add Meeting Title" ng-trim="false" ng-model="auxTitle"  planfeed-escape="revertEditing('title')" planfeed-focus="onFocusTitle">
+        </form>
+    </div>
+  </div>
+
+<div class="row date-wraper">
+        <div class='col-sm-3'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+  <div id="description-wraper"> 
+    <div id="description" ng-class="{editing: onFocusDescription}">
+
+        <div class="view">
+          
+          <label ng-click="saveOldData('description')"><a href="">{{meeting.description}}</a></label>
+
+        </div>
+        <form id="descriptionForm" ng-submit="doneEditing('description')">
+          <textarea rows='2' cols='60' id="descriptionTextArea" class="edit" placeholder="Add Meeting Description" ng-trim="false" ng-model="auxDescription"  planfeed-escape="revertEditing('description')" planfeed-focus="onFocusDescription"> </textarea>
+        </form>
+    </div>
+  </div>
+
+  <div id="agenda">
+    <h4>Agenda of the meeting:</h4>
+   
+    <div id="points">
+        <accordion close-others="true"  dnd-list="auxAgenda">
+          <ul>
+            <li ng-repeat="point in auxAgenda">
+              <accordion-group is-open="point.open">
+
+                <accordion-heading>
+                <div id="timeProgressbar">
+                    <progressbar id="pointProgressbar" max="point.originalDuration" value="point.originalDuration-point.duration"></progressbar>
+                  </div>
+                  <button id="delete" type="button" ng-click="removePoint(point)"> <span class="glyphicon glyphicon-remove"></span></button>
+                   <span class="pointName">{{point.name}}</span>
+                    <span class="pointDuration">{{point.duration|mmssFormat}} minutes</span>
+                  
+                  
+                  <i  ng-click="actComment(point)" class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': point.open, 'glyphicon-chevron-right': !point.open}"></i>
+                  
+                </accordion-heading>
+                <form id="commentForm" >
+                  <textarea rows='2' id="commentPoint" placeholder="Add Point Comments" ng-model="point.comment"></textarea>
+                 
+                   <button id="submitComment" ng-click="modifyPointComment(point); point.open=!point.open" > <span class="glyphicon glyphicon-ok-circle"></span></button>
+                 
+               </form>
+             </accordion-group>
+           </li>
+         </ul>
+        </accordion>
+        <form>
+          <input placeholdder="New point" type="text" ng-model="formPointName" ng-model-instant/>
+          <input type="number" min="0" max="999" step="1" ng-model="formPointDuration" ng-model-instant> minutes 
+          <button ng-click="addPoint()"> Add </button>
+        </form>
+      </div> 
+   
+  </div>
+
+  <div id="controlButtons">
+      <div id="playPause">
+        <button ng-click="play()" type="button" class="controlButtons" ng-class="{show: !getStatus()}"> <span class="glyphicon glyphicon-play"/></button> 
+        <button ng-click="pause()" type="button" class="controlButtons" ng-class="{show: getStatus()}"> <span class="glyphicon glyphicon-pause"/></button>
+      </div>
+      <div id="stop">
+        <button ng-click="stop()" type="button" class="controlButtons show"> <span class="glyphicon glyphicon-stop"/></button>
+      </div>
+  </div>
+  <div style="clear:both"></div>
+  <div id="timer">
+  <div ang:round:progress data-round-progress-model="getTotalRemaining()"
+                            data-round-progress-width="300"
+                            data-round-progress-height="300"
+                            data-round-progress-outer-circle-width="20"
+                            data-round-progress-inner-circle-width="10"
+                            data-round-progress-outer-circle-radius="120"
+                            data-round-progress-inner-circle-radius="90"
+                            data-round-progress-label-font="30pt Arial"
+                            data-round-progress-outer-circle-background-color="#505769"
+                            data-round-progress-outer-circle-foreground-color="#12eeb9"
+                            data-round-progress-inner-circle-color="#505769"
+                            data-round-progress-label-color="black"></div>
+ </div>
+
+ <div>
+ <a ng-click="goActa()">Acta of the meeting</a>
+ </div>
+
+</div>
