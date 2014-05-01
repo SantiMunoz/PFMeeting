@@ -85,7 +85,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 			}
 		}
 	}).error(function(response, status){
-		$('#meetingOk').load('partials/not-found.html');
+		$('#meetingOk').load('partials/error-view.html');
 	});
 	};
 
@@ -100,9 +100,14 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 
 		}
 
+	}).error(function(response, status){
+		$('#meetingOk').load('partials/error-view.html');
 	}); 
 	}
-	var putStatus = function(stat){Meeting.putStatus($routeParams.meetingId,stat );};
+	var putStatus = function(stat){Meeting.putStatus($routeParams.meetingId,stat ).error(function(response, status){
+		$('#meetingOk').load('partials/error-view.html');
+		});
+	};
 	
 	//init functions
 	$('#alertReqDiv').hide();
@@ -502,6 +507,8 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 
 	Meeting.put(newMeeting).success(function(meet){
 		$location.url('/meeting/'+ meet.meetingId);
+	}).error(function(response, status){
+		$('#meetingOk').load('partials/error-view.html');
 	});
 
 }]);
@@ -519,7 +526,9 @@ planfeedControllers.controller('ActaCtrl',['$scope', '$routeParams','Meeting', '
 
 	var getEmptyMeeting = function () { return Mock.query();};
 	$scope.getUrlActa= function(){
-		return Meeting.getUrlActa($routeParams.meetingId)
+		return Meeting.getUrlActa($routeParams.meetingId).error(function(response, status){
+		$('#meetingOk').load('partials/error-view.html');
+		});
 	
 	};
 	$scope.linkActa=Meeting.getUrlActa($routeParams.meetingId);
