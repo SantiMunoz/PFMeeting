@@ -60,6 +60,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 			if(angular.equals("",$scope.meeting.description)){
 				$scope.auxDescription="";
 				$scope.onFocusDescription=true;
+
 			}else{
 				$scope.onFocusDescription=false;
 			}
@@ -110,6 +111,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	getMeeting();
 	refresh();
 	reqPermissionOnLoad();
+
 
 	//ask for notification permission
 	function reqPermissionOnLoad(){
@@ -259,6 +261,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	    $scope.formPointName = '';
 	    $scope.formPointDuration = '';
 	    putMeeting();
+	    document.getElementById("nameNewPoint").focus();
 	  };
 
 	 $scope.removePoint = function(point) {
@@ -487,6 +490,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
     	}
     },true);
 
+	
 
 }]);
 
@@ -520,6 +524,7 @@ planfeedControllers.controller('ActaCtrl',['$scope', '$routeParams','Meeting', '
 	};
 	$scope.linkActa=Meeting.getUrlActa($routeParams.meetingId);
 	pdfservice.render('pdfCanvas', Meeting.getUrlActa($routeParams.meetingId));
+	 
 
 }]);
 

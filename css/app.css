@@ -37,20 +37,105 @@ html{
 body {
 	margin:0;
 	padding:0;
+
 	min-height: 100%;
 	font-family: "Nexa Light";
-  	background-color: rgba(104, 182, 151, 0.7);
+  	background-color: rgba(104, 182, 151, 0.72);
+  	
 
 }
 
-.navbar-inner {
-background: #2b2b2b;
-background-image: none;
-background-repeat: repeat-x;
-border-color: none;
-filter: none;
+.btn-newMet, .btn-newPoint{
+color: #fff;
+background-color: #8a949b;
+border-color: #8a949b;
 }
 
+.navbar-inverse {
+	background-color: #243743;
+	border-color: #8a949b;
+}
+.navbar-inverse .navbar-brand {
+	color: #ecf0f1;
+}
+.navbar-inverse .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+	color: #68b697;
+}
+.navbar-inverse .navbar-text {
+	color: #ecf0f1;
+}
+.navbar-inverse .navbar-nav > li > a {
+	color: #ecf0f1;
+}
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+	color: #68b697;
+}
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
+	color: #68b697;
+	background-color: #8a949b;
+}
+.navbar-inverse .navbar-nav > .open > a, .navbar-inverse .navbar-nav > .open > a:hover, .navbar-inverse .navbar-nav > .open > a:focus {
+	color: #68b697;
+	background-color: #8a949b;
+}
+.navbar-inverse .navbar-toggle {
+	border-color: #8a949b;
+}
+.navbar-inverse .navbar-toggle:hover, .navbar-inverse .navbar-toggle:focus {
+	background-color: #8a949b;
+}
+.navbar-inverse .navbar-toggle .icon-bar {
+	background-color: #ecf0f1;
+}
+.navbar-inverse .navbar-collapse,
+.navbar-inverse .navbar-form {
+	border-color: #ecf0f1;
+}
+.navbar-inverse .navbar-link {
+	color: #ecf0f1;
+}
+.navbar-inverse .navbar-link:hover {
+	color: #68b697;
+}
+
+@media (max-width: 767px) {
+	.navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
+		color: #ecf0f1;
+	}
+	.navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:focus {
+		color: #68b697;
+	}
+	.navbar-inverse .navbar-nav .open .dropdown-menu > .active > a, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
+		color: #68b697;
+		background-color: #8a949b;
+	}
+}
+
+.contentt{
+
+	background-color: rgba(255, 255, 255, 0.79);
+margin-right: auto;
+margin-left: auto;
+padding-left: 15px;
+padding-right: 15px;
+
+max-width: 1200px;
+
+min-height: 100%;
+        height: 100%;
+       margin-top: -71px;
+       padding-top: 70px;
+
+       
+}
+.ngview{
+        height: 100%;
+	width: 100%;
+    
+        min-height: 100%;
+
+
+}
 
 a{
 	text-decoration:none;
@@ -149,7 +234,7 @@ span.pointDuration{
 textarea {
     width  : 100%;
     height : 100%;
-    border : 1px solid #EEE;
+    border : 1px solid #C0C0C0;
 }
 
 #submitComment {
@@ -172,7 +257,15 @@ textarea {
 	height:35%;
 
 }
-.alo{
+.newPointForm{
+padding-left: 40px;
+}
+.newPointInput{
+	height: 34px;
+}
+
+
+.list-center{
 text-align: center;
 }
 

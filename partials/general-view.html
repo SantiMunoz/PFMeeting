@@ -11,12 +11,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. -->
-<div class="cont"> 
+
 <div id="alertReqDiv" class="alert alert-warning alert-dismissable fade in">
   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
   <a  id="linkNotiPerm" href="" class="alert-link">Please click here to activate Notifications</a>
 </div>
-  <div id="meetingOk">
+
    <div id="title-wraper"> 
     <div id="title" ng-class="{editing: onFocusTitle}" >
 
@@ -89,23 +89,24 @@ limitations under the License. -->
            </li>
          </ul>
         </accordion>
-        <form>
-          <input placeholdder="New point" type="text" ng-model="formPointName" ng-model-instant/>
-          <input type="number" min="0" max="999" step="1" ng-model="formPointDuration" ng-model-instant> minutes 
-          <button ng-click="addPoint()"> Add </button>
+        <form class="newPointForm">
+          <h4>New Point:
+          <input class="newPointInput" id="nameNewPoint" placeholder="Name" type="text" ng-model="formPointName" ng-model-instant/>
+          <input class="newPointInput" placeholder="Minutes" type="number" min="0" max="999" step="1" ng-model="formPointDuration" ng-model-instant>
+          <button class="btn btn-newPoint" ng-click="addPoint()"> Add </button> </h4>
         </form>
       </div> 
    
   </div>
 
 
-  <ul class="list-inline alo">
+  <ul class="list-inline list-center">
       
       
          <li> <button ng-click="play()" type="button" class="controlButtons " ng-class="{show: !getStatus()}"> <span class="glyphicon glyphicon-play"/></button> </li>
          <li> <button ng-click="pause()" type="button" class="controlButtons " ng-class="{show: getStatus()}"> <span class="glyphicon glyphicon-pause"/></button></li>
     
-         <li> <button ng-click="stop()" type="button" class="controlButtons show "> <span class="glyphicon glyphicon-stop"/></button></li>
+         <li> <button ng-click="stop()" type="button" class="controlButtons show "> <span class="glyphicon glyphicon-repeat"/></button></li>
 
   </ul>
 
@@ -119,9 +120,9 @@ limitations under the License. -->
                             data-round-progress-outer-circle-radius=""
                             data-round-progress-inner-circle-radius=""
                             data-round-progress-label-font=""
-                            data-round-progress-outer-circle-background-color="#505769"
-                            data-round-progress-outer-circle-foreground-color="#12eeb9"
-                            data-round-progress-inner-circle-color="#505769"
+                            data-round-progress-outer-circle-background-color="#243743"
+                            data-round-progress-outer-circle-foreground-color="#68b697"
+                            data-round-progress-inner-circle-color="#243743"
                             data-round-progress-label-color="black"> </div>
 
 
@@ -131,4 +132,3 @@ limitations under the License. -->
  <a ng-click="goActa()">Acta of the meeting</a>
  </div>
 
-</div>
