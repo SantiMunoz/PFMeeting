@@ -272,7 +272,7 @@ text-align: center;
 
 .controlButtons{
 
-
+	padding-left: 10px;
 	font-size: 300%;
 	display:none;
 
@@ -307,4 +307,15 @@ canvas {
     margin-right: auto;
     display: block;
     
+}
+
+#downloadButton{
+	font-size: 300%;
+	margin-bottom: -30px;
+}
+#linkDownload{
+	margin-bottom: 30px;
+}
+#footer{
+	padding-bottom: 30px;
 }

@@ -18,7 +18,7 @@ limitations under the License. */
 var planfeedControllers = angular.module('planfeedControllers', ['ngResource', 'ngRoute','ui.bootstrap']);
 
 
-planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 'Mock','Meeting','$timeout','$location', function ($scope, $routeParams, Mock,Meeting, $timeout,$location){
+planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 'Mock','Meeting','$timeout','$location','$filter', function ($scope, $routeParams, Mock,Meeting, $timeout,$location,$filter){
 
 
 	//notificación cuando queden 3 minutos
@@ -213,6 +213,13 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 				point.duration = point.originalDuration;
 			});
 			$scope.auxAgenda = angular.copy($scope.meeting.agenda);
+		}else if(angular.equals($scope.meeting.status, "finished")){
+			play=false;
+			angular.forEach($scope.meeting.agenda, function(point){
+		 		point.duration = 0;
+				
+		 	});
+		 	$scope.auxAgenda = angular.copy($scope.meeting.agenda);
 		}
 	};
 
@@ -309,7 +316,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	 	if(!angular.equals($scope.meeting.status,"pause")){
 		 	$scope.meeting.status="pause";
 		 	play = false;
-		 	$scope.meeting.agenda = $scope.auxAgenda;
+		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
 		 	putStatus("pause");
 		 	putMeeting();
 	 	}
@@ -320,15 +327,52 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		 	$scope.meeting.status="stop";
 		 	play = false;
 		 	$scope.indexx = 0;
-		 	putStatus('stop');
+		 	
 		 	angular.forEach($scope.auxAgenda, function(point){
 		 		point.duration = point.originalDuration;
 				
 		 	});
-		 	$scope.meeting.agenda = $scope.auxAgenda;
+		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
+		 	putStatus("stop");
 		 	putMeeting();
 	 	}
 	 };
+
+	 $scope.timeRemainingWhenFinish=null;
+	 $scope.finishMeeting=function(){
+	 	$scope.timeRemainingWhenFinish=$filter('HHmmssFormat')($scope.getTotalRemaining().value);
+
+	 	if(!angular.equals($scope.meeting.status,"finished")){
+	 		$scope.meeting.status="finished";
+		 	angular.forEach($scope.auxAgenda, function(point){
+			 		point.duration = 0;
+			 	});
+		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
+			 putStatus("finished");
+			 putMeeting();
+		}
+	 };
+
+	 $scope.getMessageFinish=function(){
+	 	return "Congratulations, you have finished the meeting "+$scope.timeRemainingWhenFinish+" early!";
+	 };
+
+	 //close popover 
+	$('body').on('click', function (e) {
+	   $('*[popover]').each(function () {
+	                //Only do this for all popovers other than the current one that cause this event
+	                if (!($(this).is(e.target) || $(this).has(e.target).length > 0) 
+	                     && $(this).siblings('.popover').length !== 0 
+	                     && $(this).siblings('.popover').has(e.target).length === 0)                  
+	                {
+	                     //Remove the popover element from the DOM          
+	                     $(this).siblings('.popover').remove();
+	                     //Set the state of the popover in the scope to reflect this          
+	                     angular.element(this).scope().tt_isOpen = false;
+	                }
+	    });
+	});
+
 
 
 	$scope.onFocusTitle = false;
@@ -515,16 +559,24 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 
 planfeedControllers.controller('MainCtrl',['$scope', '$routeParams', 'Mock','Meeting','$location', function ($scope, $routeParams, Mock,Meeting,$location){
 
-	// $scope.newMeeting = function(){
-	// 	$location.url('/meeting');
 
-	// };
 
 }]);
 
-planfeedControllers.controller('ActaCtrl',['$scope', '$routeParams','Meeting', '$location','pdfservice', function ($scope, $routeParams,Meeting, $location,pdfservice){
+planfeedControllers.controller('ActaCtrl',['$scope', '$routeParams','Mock', 'Meeting', '$location','pdfservice', function ($scope, $routeParams,Mock,Meeting, $location,pdfservice){
 
-	var getEmptyMeeting = function () { return Mock.query();};
+	 $scope.actaMeeting = Mock.query();
+	
+	Meeting.get($routeParams.meetingId).success(function(response){
+		$scope.actaMeeting=response;
+
+		});
+	$scope.getDocumentName=function(){
+	
+		
+		return "Acta of "+$scope.actaMeeting.title+".pdf";
+	};
+
 	$scope.getUrlActa= function(){
 		return Meeting.getUrlActa($routeParams.meetingId).error(function(response, status){
 		$('.ngview').load('partials/error-view.html');

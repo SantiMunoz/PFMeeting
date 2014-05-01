@@ -12,8 +12,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. -->
 <div id="acta">
-	 <canvas id="pdfCanvas" type="application/pdf"/>
-	 <div>
- 	 <h1><a href="{{linkActa}}" download="name.pdf">Download pdf</a></h1>
+
+	<div class="iconDownload" id="downloadButton">
+		<a href="{{linkActa}}" download="{{getDocumentName()}}"><span class="glyphicon glyphicon-cloud-download"/></button><a>
+	</div>
+	<div id="linkDownload">
+ 	 <h1><a href="{{linkActa}}" download="{{getDocumentName()}}">Download pdf</a></h1>
+ 	</div>
  	<div>
+	 <canvas id="pdfCanvas" type="application/pdf"/>
+	 </div>
 </div>

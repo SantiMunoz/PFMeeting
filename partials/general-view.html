@@ -59,7 +59,7 @@ limitations under the License. -->
   </div>
 
   <div id="agenda">
-    <h4>Agenda of the meeting:</h4>
+    <h4>Agenda of the meeting:   <button ng-click="goActa()"><span class="glyphicon glyphicon-new-window"/></button></h4>
    
     <div id="points">
         <accordion close-others="true"  dnd-list="auxAgenda">
@@ -107,6 +107,7 @@ limitations under the License. -->
          <li> <button ng-click="pause()" type="button" class="controlButtons " ng-class="{show: getStatus()}"> <span class="glyphicon glyphicon-pause"/></button></li>
     
          <li> <button ng-click="stop()" type="button" class="controlButtons show "> <span class="glyphicon glyphicon-repeat"/></button></li>
+         <li> <button popover="{{getMessageFinish()}}" ng-click="finishMeeting()" type="button" class="controlButtons show "> <span class="glyphicon glyphicon-ok"/></button></li>
 
   </ul>
 
@@ -129,6 +130,6 @@ limitations under the License. -->
  <div>
 
 
- <a ng-click="goActa()">Acta of the meeting</a>
+ 
  </div>
 
