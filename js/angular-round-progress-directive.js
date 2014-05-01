@@ -9,8 +9,26 @@ planfeedApp.directive('angRoundProgress', [function () {
     if (templateElement.length === 1) {
       var node = templateElement[0];
 
-      var width = node.getAttribute('data-round-progress-width') || '400';
-      var height = node.getAttribute('data-round-progress-height') || '400';
+      var defaultRad = 280;
+      var canvasWidth=defaultRad;
+      var canvasOCW=20;
+      var canvasICW=10;
+      var canvasOCR=120;
+      var canvasICR=90;
+      var canvasLabel=30;
+
+      if (window.innerWidth<325){
+          canvasWidth=window.innerWidth-45;
+          canvasOCW=canvasOCW*canvasWidth/defaultRad;
+          canvasICW=canvasICW*canvasWidth/defaultRad;
+          canvasOCR=canvasOCR*canvasWidth/defaultRad;
+          canvasICR=canvasICR*canvasWidth/defaultRad;
+          canvasLabel=canvasLabel*canvasWidth/defaultRad;
+        }
+
+      var width = node.getAttribute('data-round-progress-width') || canvasWidth;
+      var height = node.getAttribute('data-round-progress-height') || canvasWidth;
+
 
       var canvas = document.createElement('canvas');
       canvas.setAttribute('width', width);
@@ -19,18 +37,18 @@ planfeedApp.directive('angRoundProgress', [function () {
 
       node.parentNode.replaceChild(canvas, node);
 
-      var outerCircleWidth = node.getAttribute('data-round-progress-outer-circle-width') || '20';
-      var innerCircleWidth = node.getAttribute('data-round-progress-inner-circle-width') || '5';
+      var outerCircleWidth = node.getAttribute('data-round-progress-outer-circle-width') || canvasOCW;
+      var innerCircleWidth = node.getAttribute('data-round-progress-inner-circle-width') || canvasICW;
 
       var outerCircleBackgroundColor = node.getAttribute('data-round-progress-outer-circle-background-color') || '#505769';
       var outerCircleForegroundColor = node.getAttribute('data-round-progress-outer-circle-foreground-color') || '#12eeb9';
       var innerCircleColor = node.getAttribute('data-round-progress-inner-circle-color') || '#505769';
       var labelColor = node.getAttribute('data-round-progress-label-color') || '#12eeb9';
 
-      var outerCircleRadius = node.getAttribute('data-round-progress-outer-circle-radius') || '100';
-      var innerCircleRadius = node.getAttribute('data-round-progress-inner-circle-radius') || '70';
+      var outerCircleRadius = node.getAttribute('data-round-progress-outer-circle-radius') || canvasOCR;
+      var innerCircleRadius = node.getAttribute('data-round-progress-inner-circle-radius') || canvasICR;
 
-      var labelFont = node.getAttribute('data-round-progress-label-font') || '50pt Calibri';
+      var labelFont = node.getAttribute('data-round-progress-label-font') || canvasLabel+'pt Arial';
 
       return {
         pre: function preLink(scope, instanceElement, instanceAttributes, controller) {
@@ -102,5 +120,6 @@ planfeedApp.directive('angRoundProgress', [function () {
     compile: compilationFunction,
     replace: true
   };
+
   return roundProgress;
 }]);

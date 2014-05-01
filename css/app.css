@@ -11,53 +11,64 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. */
-html{
-	 height: 100%;
+@font-face{
+	font-family: "Nexa Bold";
+   font-style: normal;
+   font-weight: normal;
+   src: url('../fonts/Nexa Bold.otf');
 }
-body {
-     padding: 0;
-    margin: 0;
-  padding-top: 70px;
-   height: 100%;
+
+@font-face{
+	font-family: "Nexa Ligth";
+   font-style: normal;
+   font-weight: normal;
+   src: url('../fonts/Nexa Ligth.otf');
+}
+
+
+
+
+html{
+	height: 100%;
+	background-image:url("../img/background.jpg");
 
 }
+
+body {
+	margin:0;
+	padding:0;
+	min-height: 100%;
+	font-family: "Nexa Light";
+  	background-color: rgba(104, 182, 151, 0.7);
+
+}
+
+.navbar-inner {
+background: #2b2b2b;
+background-image: none;
+background-repeat: repeat-x;
+border-color: none;
+filter: none;
+}
+
+
 a{
 	text-decoration:none;
 	color:#333;
 }
 a:hover{text-decoration: none ; color:#333;}
-#header-rigth {
-	width:35%;
-	float: right;
-}
-#header-left{
-	width:65%;
-	float: left;
-}
 
-#header-button{
-	position: relative;
-	float: right;
-
-}
-.new-meeting{
-	position: relative;
-	top: 8px;
-	margin-right: 0;
-	margin-left: 15px;
-	float: right;
-}
 
 
 #title-wraper{
-	font-size: 35px;
-	height: 40px;
+	font-size: 2.188em;
+	
 
 }
 
 #description-wraper{
 	
-	font-size: 20px;
+	font-size: 1.250em;
 
 }
 
@@ -67,22 +78,25 @@ a:hover{text-decoration: none ; color:#333;}
 }
 div.editing .edit{
 	display: block;
-
-
 }
 
 div.editing .view{
 	display: none;
 	}
 
+#titleInput{
+	
+	 max-width:100%; 
+}
+
 .date-wraper{
 	
 	
-	margin-top: 25px;
+	padding-top: 10px;
 }
 
 #agenda{
-	margin-top:35px;
+	padding-top:35px;
 }
 
 #points{
@@ -158,20 +172,14 @@ textarea {
 	height:35%;
 
 }
-
-#controlButtons{
-
-	margin-left: 45%;
-
+.alo{
+text-align: center;
 }
-#playPause{
-	float:left;
-}
-#stop{
-	float:left;
-}
+
+
 .controlButtons{
-	
+
+
 	font-size: 300%;
 	display:none;
 
@@ -197,4 +205,13 @@ text-align:center;
 border:1px solid black;
 
 
+}
+canvas {
+
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    
 }

@@ -26,7 +26,7 @@ limitations under the License. -->
 
         </div>
         <form ng-submit="doneEditing('title')">
-          <input class="edit" placeholder="Add Meeting Title" ng-trim="false" ng-model="auxTitle"  planfeed-escape="revertEditing('title')" planfeed-focus="onFocusTitle">
+          <input class="edit" id="titleInput" placeholder="Add Meeting Title" ng-trim="false" ng-model="auxTitle"  planfeed-escape="revertEditing('title')" planfeed-focus="onFocusTitle">
         </form>
     </div>
   </div>
@@ -73,7 +73,7 @@ limitations under the License. -->
                   </div>
                   <button id="delete" type="button" ng-click="removePoint(point)"> <span class="glyphicon glyphicon-remove"></span></button>
                    <span class="pointName">{{point.name}}</span>
-                    <span class="pointDuration">{{point.duration|mmssFormat}} minutes</span>
+                    <span class="pointDuration">{{point.duration|mmssFormat}}</span>
                   
                   
                   <i  ng-click="actComment(point)" class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': point.open, 'glyphicon-chevron-right': !point.open}"></i>
@@ -98,32 +98,36 @@ limitations under the License. -->
    
   </div>
 
-  <div id="controlButtons">
-      <div id="playPause">
-        <button ng-click="play()" type="button" class="controlButtons" ng-class="{show: !getStatus()}"> <span class="glyphicon glyphicon-play"/></button> 
-        <button ng-click="pause()" type="button" class="controlButtons" ng-class="{show: getStatus()}"> <span class="glyphicon glyphicon-pause"/></button>
-      </div>
-      <div id="stop">
-        <button ng-click="stop()" type="button" class="controlButtons show"> <span class="glyphicon glyphicon-stop"/></button>
-      </div>
-  </div>
-  <div style="clear:both"></div>
-  <div id="timer">
-  <div ang:round:progress data-round-progress-model="getTotalRemaining()"
-                            data-round-progress-width="300"
-                            data-round-progress-height="300"
-                            data-round-progress-outer-circle-width="20"
-                            data-round-progress-inner-circle-width="10"
-                            data-round-progress-outer-circle-radius="120"
-                            data-round-progress-inner-circle-radius="90"
-                            data-round-progress-label-font="30pt Arial"
+
+  <ul class="list-inline alo">
+      
+      
+         <li> <button ng-click="play()" type="button" class="controlButtons " ng-class="{show: !getStatus()}"> <span class="glyphicon glyphicon-play"/></button> </li>
+         <li> <button ng-click="pause()" type="button" class="controlButtons " ng-class="{show: getStatus()}"> <span class="glyphicon glyphicon-pause"/></button></li>
+    
+         <li> <button ng-click="stop()" type="button" class="controlButtons show "> <span class="glyphicon glyphicon-stop"/></button></li>
+
+  </ul>
+
+
+
+  <div  ang:round:progress data-round-progress-model="getTotalRemaining()"
+                            data-round-progress-width="" 
+                            data-round-progress-height=""
+                            data-round-progress-outer-circle-width=""
+                            data-round-progress-inner-circle-width=""
+                            data-round-progress-outer-circle-radius=""
+                            data-round-progress-inner-circle-radius=""
+                            data-round-progress-label-font=""
                             data-round-progress-outer-circle-background-color="#505769"
                             data-round-progress-outer-circle-foreground-color="#12eeb9"
                             data-round-progress-inner-circle-color="#505769"
-                            data-round-progress-label-color="black"></div>
- </div>
+                            data-round-progress-label-color="black"> </div>
+
 
  <div>
+
+
  <a ng-click="goActa()">Acta of the meeting</a>
  </div>
 

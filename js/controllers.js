@@ -21,7 +21,6 @@ var planfeedControllers = angular.module('planfeedControllers', ['ngResource', '
 planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 'Mock','Meeting','$timeout','$location', function ($scope, $routeParams, Mock,Meeting, $timeout,$location){
 
 
-
 	//notificación cuando queden 3 minutos
 	var timeToAlert=3;
 	var putDnDChange=false;
@@ -151,7 +150,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	});
 
 	var actAuxAgenda = function(){
-
+		$scope.indexx=0;
 		if(!$scope.auxAgenda){
 			var auxAgendaLength = 0;
 		}else{
@@ -213,6 +212,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	function actPointsDuration(elapsedTime){
 		var done = false;
 			var index=0;
+
 			while((index<$scope.auxAgenda.length)&&!done){
 				elapsedTime = $scope.auxAgenda[index].duration - elapsedTime;
 				if(elapsedTime<0){
@@ -408,9 +408,8 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
  			if($scope.auxPoint.duration>0){
  				$scope.auxAgenda[$scope.indexx].duration = parseInt($scope.auxPoint.duration) -1;
  				if($scope.auxAgenda[$scope.indexx].duration ==timeToAlert*60){
- 					if (Notification && Notification.permission === "granted") {
-
- 						
+ 					
+ 					if (Notification && Notification.permission === "granted") { 						
 				        var n = new Notification("Alert!", {body: $scope.auxAgenda[$scope.indexx].name+" of "+$scope.meeting.title+": less than "+timeToAlert+" minutes.",
 				   											icon: "img/warning.png"});
 
@@ -487,6 +486,8 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
     		first=false;
     	}
     },true);
+
+
 }]);
 
 
