@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 'use strict';
 
-var baseURL = 'http://localhost:8080/PlanFeedAPI/api/';
+var baseURL = 'http://pfmeetingapi.appspot.com/api/';
 var planfeedServices = angular.module('planfeedServices', ['ngResource', 'ngRoute']);
 
 planfeedServices.factory('Mock', ['$resource',
