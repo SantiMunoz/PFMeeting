@@ -89,11 +89,11 @@ limitations under the License. -->
            </li>
          </ul>
         </accordion>
-        <form class="newPointForm">
+        <form class="newPointForm" ng-submit="addPoint()">
           <h4>New Point:
-          <input class="newPointInput" id="nameNewPoint" placeholder="Name" type="text" ng-model="formPointName" ng-model-instant/>
-          <input class="newPointInput" placeholder="Minutes" type="number" min="0" max="999" step="1" ng-model="formPointDuration" ng-model-instant>
-          <button class="btn btn-newPoint" ng-click="addPoint()"> Add </button> </h4>
+          <input class="newPointInput" id="nameNewPoint" placeholder="Name" type="text" ng-model="formPointName" ng-model-instant required/>
+          <input class="newPointInput" id="inputMinutes" placeholder="Minutes" type="number" min="0" step="1" pattern="\d+" ng-model="formPointDuration" ng-model-instant required>
+          <button class="btn btn-newPoint" type="submit"> Add </button> </h4>
         </form>
       </div> 
    

@@ -13,7 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License. */
 'use strict';
 
-var baseURL = 'http://pfmeetingapi.appspot.com/api/';
+//var baseURL = 'http://pfmeeting.com/api/';
+var baseURL ='http://localhost:8080/PlanFeedAPI/api/'
 var planfeedServices = angular.module('planfeedServices', ['ngResource', 'ngRoute']);
 
 planfeedServices.factory('Mock', ['$resource',
@@ -29,7 +30,8 @@ planfeedServices.factory('Meeting', function($http){
     var planFeedAPI = {};
 
     planFeedAPI.get=function(meetingId){
-      return $http.get(baseURL+'meetings/'+meetingId);
+      var antiCached=new Date().getTime();
+      return $http.get(baseURL+'meetings/'+meetingId+"/?cache="+antiCached);
     }
 
     planFeedAPI.getUrlActa=function(meetingId){

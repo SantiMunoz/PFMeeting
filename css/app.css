@@ -319,3 +319,6 @@ canvas {
 #footer{
 	padding-bottom: 30px;
 }
+#inputMinutes{
+	width: 80px;
+}

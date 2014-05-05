@@ -16,14 +16,16 @@ limitations under the License. */
 var planfeedApp = angular.module ('planfeedApp', [
   'ngRoute',
   'ngResource',
-  'ngAnimate',
   'planfeedControllers',
   'planfeedFilters',
   'planfeedServices'
 ]);
 
 
-planfeedApp.config(['$routeProvider',function($routeProvider) {
+planfeedApp.config(['$routeProvider','$locationProvider',function($routeProvider, $locationProvider) {
+	
+
+
 	$routeProvider.when('/meeting/:meetingId/acta', {
 		templateUrl: 'partials/acta-meeting.html',
 		controller: 'ActaCtrl'
@@ -39,6 +41,6 @@ planfeedApp.config(['$routeProvider',function($routeProvider) {
 	}).otherwise({
 		redirectTo: '/'
 	});
+
 	
 }]); 
-

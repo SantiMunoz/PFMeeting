@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. -->
 <!doctype html>
-<html lang="en" ng-app="planfeedApp">
+<html lang="en" xmlns:ng="http://angularjs.org" id="ng-app" ng-app="planfeedApp">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,17 +23,16 @@ limitations under the License. -->
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
 
-
-  <script src="lib/jquery-1.10.2.js"></script>
-  <script src="lib/angular.js"></script>
-  <script src="lib/angular-resource.js"></script>
-  <script src="lib/angular-route.js"></script> 
-  <script src="lib/angular-animate.js"></script> 
-  <script src="lib/bootstrap.js"></script>
+<script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+  <script src="lib/jquery-1.11.1.min.js"></script>
+  <script src="lib/angular.min.js"></script>
+  <script src="lib/angular-resource.min.js"></script>
+  <script src="lib/angular-route.min.js"></script> 
+  <script src="lib/bootstrap.min.js"></script>
   <script src="lib/moment.min.js"></script>
   <script src="lib/bootstrap-datetimepicker.min.js"></script>
   <script src="lib/ui-bootstrap-tpls-0.10.0.min.js"></script>
-  <script src="lib/jquery-ui.js"></script>
+  <script src="lib/jquery-ui-1.10.4.min.js"></script>
   <script src="lib/pdf.js"></script>
   <script src="lib/pdf.worker.js"></script>
   
@@ -48,7 +47,7 @@ limitations under the License. -->
   <script src="js/dndListDirective.js"></script>
   <script src="js/angular-round-progress-directive.js"></script>
   <script src="js/pdfservice.js"></script>
-
+  <script src="js/googleService.js"></script>
 
 </head>
 <body > 
@@ -68,16 +67,20 @@ limitations under the License. -->
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse">
       <a role="button" class="btn btn-newMet navbar-btn navbar-right" href="#/meeting">New Meeting</a>
+     <button class="btn btn-newMet navbar-btn navbar-right" ng-click="login()">Authorize</button>
     </div>
   </div>
 </div>
 
-  <div class="contentt">
+  <div class="contentt" id="mainContent">
 
        <div ng-view class="ngview"></div> 
        <div id="footer"></div>
   </div>
 <div id="footer"></div>
+
+
+
 </body>
 
 </html>
