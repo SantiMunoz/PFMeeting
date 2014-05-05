@@ -582,13 +582,21 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 
 }]);
 
-planfeedControllers.controller('MainCtrl',['$scope', '$routeParams', 'Mock','Meeting','$location','googleService', function ($scope, $routeParams, Mock,Meeting,$location,googleService){
+planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', 'Mock','Meeting','$location','googleService', function ($window,$scope, $routeParams, Mock,Meeting,$location,googleService){
 
-$scope.loged = "false";
+$scope.calendar = "alo";
 $scope.token = "Cap token";
+
  $scope.login = function () {
                 googleService.login().then(function (data) {
                     $scope.token=gapi.auth.getToken();
+
+                    // gapi.client.load('calendar', 'v3', function(){
+                    // 	var request=gapi.client.calendar.calendarList.get();
+                    // 	request.execute(function(resp) { console.log(resp); });
+                    // });
+				   console.log(googleService.getData());
+		
                 }, function (err) {
                     console.log('Failed: ' + err);
                 });
