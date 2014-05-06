@@ -33,6 +33,11 @@ planfeedFilters.filter('mmssFormat', function() {
 
 planfeedFilters.filter('HHmmssFormat', function() {
 	return function(input){
+
+		if(input <0){
+
+              input=Math.abs(input);
+            }
 		var out="";
 		var hours = Math.floor(input/3600);
 		input= input-hours*3600;
@@ -48,6 +53,7 @@ planfeedFilters.filter('HHmmssFormat', function() {
 			seconds="0"+seconds.toString();
 		}
 		out = hours + ":" + minutes + ":" + seconds;
+
 		return out;
 	};
 });

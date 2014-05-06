@@ -96,6 +96,16 @@ planfeedApp.directive('angRoundProgress', [function () {
             ctx.fillStyle = labelColor;
 
             var input=newValue.value;
+            var negative = false;
+            if(input <0){
+              negative = true;
+              outerCircleForegroundColor = '#FF0000';
+              input=Math.abs(input);
+            }else{
+              outerCircleForegroundColor= '#12eeb9';
+  
+            }
+
             var out="";
             var hours = Math.floor(input/3600);
             input= input-hours*3600;
@@ -111,6 +121,10 @@ planfeedApp.directive('angRoundProgress', [function () {
               seconds="0"+seconds.toString();
             }
             out = hours + ":" + minutes + ":" + seconds;
+
+            if(negative){
+              out="-"+out;
+            }
 
             ctx.fillText(out, x, y);
 
