@@ -284,10 +284,14 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		$('#datetimepicker').data("DateTimePicker").setDate(moment($scope.meeting.date));
 	};
 
+
+
+
 	var negativeTimed = false; //control timeRemaining, popover and canvas
 	var negativeTime = false;  //control cronoNegative
 	var negativeSeconds=0;
 	var cronoPlayed = false;
+
 	$scope.getTotalRemaining = function(){
 		var totalRemaining={
 			value:parseInt(0),
@@ -302,12 +306,12 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 			});
 			if(totalRemaining.value==0){
 				if(cronoPlayed&&play&&!angular.equals($scope.meeting.status,"finished")){
-					negativeTimed=negativeTime=true;
-					cronoNegative();
-					$scope.meeting.status="offTime";
-					putStatus("offTime");
+					
+					$timeout(startNegative,1000);
+				}else{
+					play=false;
 				}
-				play=false;
+			
 				
 			}
 			totalRemaining.percentage = totalRemaining.value*100/totalRemaining.total;
@@ -318,6 +322,16 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		}
 		return totalRemaining;
 		
+	};
+
+	var startNegative = function(){
+		if(cronoPlayed&&play&&!angular.equals($scope.meeting.status,"finished")){
+			play=false;
+			negativeTimed=negativeTime=true;
+			cronoNegative();
+			$scope.meeting.status="offTime";
+			putStatus("offTime");
+		}
 	};
 
   	$scope.addPoint = function() {
@@ -338,7 +352,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	 		play=false;
 			if($scope.meeting.status != "stop"){
 				$scope.meeting.status="stop";
-	 			putStatus("stop");
+	 			//putStatus("stop");
 	 			negativeTimed=negativeTime = false;
 	 			$scope.meeting.initOffTime=0;
 	 		}
@@ -363,7 +377,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	
 	 $scope.play = function(){
 	 	
-	 	if(!angular.equals($scope.meeting.status,"play") &&$scope.auxAgenda.length!=0 &&!negativeTime){
+	 	if(!angular.equals($scope.meeting.status,"play") &&$scope.auxAgenda.length!=0 &&!negativeTime&&!angular.equals($scope.meeting.status,"finished")){
 	 		$scope.meeting.status="play";
 	 		play=true;
 			crono();
@@ -377,7 +391,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		 	$scope.meeting.status="pause";
 		 	play = false;
 		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
-		 	putStatus("pause");
+		 	//putStatus("pause");
 		 	putMeeting();
 	 	}
 	 };
@@ -396,25 +410,27 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 				
 		 	});
 		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
-		 	putStatus("stop");
+		 	//putStatus("stop");
 		 	putMeeting();
 	 	}
 	 };
 
 	 $scope.timeRemainingWhenFinish=null;
 	 $scope.finishMeeting=function(){
-	 	$scope.timeRemainingWhenFinish=$filter('HHmmssFormat')($scope.getTotalRemaining().value);
+	 	
 
 	 	if(!angular.equals($scope.meeting.status,"finished")){
 	 		$scope.meeting.status="finished";
-
+	 		$scope.timeRemainingWhenFinish=$filter('HHmmssFormat')($scope.getTotalRemaining().value);
 		 	angular.forEach($scope.auxAgenda, function(point){
 			 		point.duration = 0;
 			 	});
 		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
-			 putStatus("finished");
+			 //putStatus("finished");
 			 putMeeting();
 			 negativeTime=false;
+		}else{
+			$scope.timeRemainingWhenFinish=$filter('HHmmssFormat')($scope.getTotalRemaining().value);
 		}
 	 };
 
@@ -646,23 +662,85 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 
 planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', 'Mock','Meeting','$location','googleService', function ($window,$scope, $routeParams, Mock,Meeting,$location,googleService){
 
-$scope.calendar = "alo";
-$scope.token = "Cap token";
 
- $scope.login = function () {
-                googleService.login().then(function (data) {
-                    $scope.token=gapi.auth.getToken();
+}]);
 
-                    // gapi.client.load('calendar', 'v3', function(){
-                    // 	var request=gapi.client.calendar.calendarList.get();
-                    // 	request.execute(function(resp) { console.log(resp); });
-                    // });
-				   console.log(googleService.getData());
+
+
+planfeedControllers.controller('NavBarCtrl',['$modal','$window','$scope', '$routeParams', 'Mock','Meeting','$location', function ($modal,$window,$scope, $routeParams, Mock,Meeting,$location){
+
+
+
+ $scope.openModal = function(size){
+ 		var modalInstance = $modal.open({
+	      templateUrl: 'partials/calendarModal.html',
+	      controller: CalendarModalCtrl,
+	      size: size
+	    });
+
+	    
+ };
+
+
+ var CalendarModalCtrl = function ($modalInstance,$window,$scope, $routeParams, Mock,Meeting,$location,googleService) {
+ 	$scope.events=[];
+
+
+       googleService.login().then(function (data) {
+            //console.log(gapi.auth.getToken());
+            
+            gapi.client.load('calendar', 'v3', function(){
+            	var request=gapi.client.calendar.events.list({calendarId: data.email, maxResults:10, orderBy:'updated'});
+            	request.execute(function(resp) {
+            		console.log(resp);
+            		angular.forEach(resp.items, function(event){
+				   		$scope.events.push(event);
+						
+					});
+				   	$scope.$apply();
+            	 	
+            	});
+            });
+		   
+
+         }, function (err) {
+             console.log('Failed: ' + err);
+         });
+	  $scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	  };
+
+  };
+
+}]);
+
+planfeedControllers.controller('CalendarModalCtrl',['$modalInstance','$window','$scope', '$routeParams', 'Mock','Meeting','$location','googleService', function ($modalInstance,$window,$scope, $routeParams, Mock,Meeting,$location,googleService){
+
+$scope.events=[];
+
+
+               googleService.login().then(function (data) {
+                    //console.log(gapi.auth.getToken());
+                    
+                    gapi.client.load('calendar', 'v3', function(){
+                    	var request=gapi.client.calendar.events.list({calendarId: data.email, maxResults:10, orderBy:'updated'});
+                    	request.execute(function(resp) {
+                    		console.log(resp);
+                    		angular.forEach(resp.items, function(event){
+						   		$scope.events.push(event);
+								
+							});
+						   	$scope.$apply();
+                    	 	
+                    	});
+                    });
+				   
 		
-                }, function (err) {
-                    console.log('Failed: ' + err);
-                });
-            };
+                 }, function (err) {
+                     console.log('Failed: ' + err);
+                 });
+       
+
 
 }]);
 

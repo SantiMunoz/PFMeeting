@@ -24,6 +24,41 @@ limitations under the License. -->
   <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
 
 
+
+</head>
+<body > 
+
+<div class="navbar navbar-inverse navbar-static-top" ng-controller="NavBarCtrl">
+  <div class="container">
+   <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/">P&F Meeting Tool </a>
+      
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-collapse">
+      <a role="button" class="btn btn-newMet navbar-btn navbar-right" href="#/meeting">New Meeting</a>
+       <button class="btn btn-newMet navbar-btn navbar-right" ng-click="openModal()"><img id="calendarIcon" src="img/calendarIcon.png"/>Import</button>
+    </div>
+  </div>
+</div>
+
+  <div class="contentt" id="mainContent">
+
+       <div ng-view class="ngview"></div> 
+       <div id="footer"></div>
+  </div>
+<div id="footer"></div>
+
+
+
+</body>
+
   <script src="lib/jquery-1.11.1.min.js"></script>
   <script src="lib/angular.min.js"></script>
   <script src="lib/angular-resource.min.js"></script>
@@ -48,39 +83,5 @@ limitations under the License. -->
   <script src="js/angular-round-progress-directive.js"></script>
   <script src="js/pdfservice.js"></script>
   <script src="js/googleService.js"></script>
-
-</head>
-<body > 
-
-<div class="navbar navbar-inverse navbar-static-top" ng-controller="MainCtrl">
-  <div class="container">
-   <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="#/">P&F Meeting Tool </a>
-      
-    </div>
-    <div class="collapse navbar-collapse" id="navbar-collapse">
-      <a role="button" class="btn btn-newMet navbar-btn navbar-right" href="#/meeting">New Meeting</a>
-     <button class="btn btn-newMet navbar-btn navbar-right" ng-click="login()">Authorize</button>
-    </div>
-  </div>
-</div>
-
-  <div class="contentt" id="mainContent">
-
-       <div ng-view class="ngview"></div> 
-       <div id="footer"></div>
-  </div>
-<div id="footer"></div>
-
-
-  <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
-</body>
-
+    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
 </html>

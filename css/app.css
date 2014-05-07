@@ -44,7 +44,15 @@ body {
   	
 
 }
-
+.modal {
+    display: block;
+}
+.navbar-btn{
+	margin-left: 10px;
+}
+#calendarIcon{
+	padding-right: 4px;
+}
 .btn-newMet, .btn-newPoint{
 color: #fff;
 background-color: #8a949b;
@@ -147,10 +155,12 @@ a:hover{text-decoration: none ; color:#333;}
 
 #title-wraper{
 	font-size: 2.188em;
-	
+
 
 }
-
+#titleInput{
+	max-width: 80%;
+}
 #description-wraper{
 	
 	font-size: 1.250em;
@@ -162,18 +172,32 @@ a:hover{text-decoration: none ; color:#333;}
 
 }
 div.editing .edit{
-	display: block;
+
+	display: inline-block;
+
 }
 
 div.editing .view{
 	display: none;
 	}
 
-#titleInput{
-	
-	 max-width:100%; 
+.submitEditButtonTitle{
+		font-size:0.6em;
+		padding-left: 5px;
+}
+.submitEditButtonDesc{
+		font-size:1em;
+		padding-left: 5px;
+		margin-top:auto;
+margin-bottom:auto;
+}
+#descriptionTextArea{
+	max-width: 80%;
 }
 
+#submitComment{
+
+}
 .date-wraper{
 	
 	

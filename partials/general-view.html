@@ -23,11 +23,14 @@ limitations under the License. -->
         <div class="view">
           
           <label ng-click="saveOldData('title')"><a href="">{{meeting.title}}</a></label>
-          <button ng-click="saveOldData('title')" type="button" class="btn-lg"> <span class="glyphicon glyphicon-edit"/></button> 
+          <button ng-click="saveOldData('title')" type="button" class="submitEditButtonTitle"> <span class="glyphicon glyphicon-edit"/></button> 
         </div>
         <form ng-submit="doneEditing('title')">
-         <h3> <input class="edit" id="titleInput" placeholder="Add Meeting Title" ng-trim="false" ng-model="auxTitle"  planfeed-escape="revertEditing('title')" planfeed-focus="onFocusTitle"> 
-          <button type="submit" class="edit btn-lg"> <span class="glyphicon glyphicon-ok-circle"></span></button> </h3>
+          
+            <input  class="edit" id="titleInput" placeholder="Add Meeting Title" ng-trim="false" ng-model="auxTitle"  planfeed-escape="revertEditing('title')" planfeed-focus="onFocusTitle"> 
+            <div class="edit ">
+            <button type="submit"  class="edit submitEditButtonTitle"> <span class="glyphicon glyphicon-ok-circle"></span></button> 
+            </div>
         </form>
     </div>
   </div>
@@ -51,11 +54,11 @@ limitations under the License. -->
         <div class="view">
           
           <label ng-click="saveOldData('description')"><a href="">{{meeting.description}}</a></label>
-          <button ng-click="saveOldData('description')" type="button" class="btn-lg"> <span class="glyphicon glyphicon-edit"/></button> 
+          <button ng-click="saveOldData('description')" type="button" class="submitEditButtonDesc"> <span class="glyphicon glyphicon-edit"/></button> 
         </div>
         <form id="descriptionForm" ng-submit="doneEditing('description')">
-          <textarea rows='2' cols='60' id="descriptionTextArea" class="edit" placeholder="Add Meeting Description" ng-trim="false" ng-model="auxDescription"  planfeed-escape="revertEditing('description')" planfeed-focus="onFocusDescription"> </textarea>
-          <button type="submit" class="edit btn-lg"> <span class="glyphicon glyphicon-ok-circle"></span></button> 
+          <textarea rows='2'  id="descriptionTextArea" class="edit" placeholder="Add Meeting Description" ng-trim="false" ng-model="auxDescription"  planfeed-escape="revertEditing('description')" planfeed-focus="onFocusDescription"> </textarea>
+          <button type="submit" class="edit submitEditButton" id="submitCommentDesc"> <span class="glyphicon glyphicon-ok-circle"></span></button> 
         </form>
     </div>
   </div>
