@@ -647,11 +647,12 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 }]);
 
 
-planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock','Meeting','$location','calendarEventService', function ($scope, $routeParams, Mock,Meeting,$location,calendarEventService){
+planfeedControllers.controller('NewMeetingCtrl',['dataUserService','$scope', '$routeParams', 'Mock','Meeting','$location','calendarEventService', function (dataUserService,$scope, $routeParams, Mock,Meeting,$location,calendarEventService){
 
 	var newMeeting = Mock.query();
 	var calendarEvent = calendarEventService.getCalendarEvent();
 	if(calendarEvent!=null){
+		//console.log(calendarEvent);
 		newMeeting.title=calendarEvent.summary;
 		newMeeting.description=calendarEvent.description;
 
@@ -659,6 +660,19 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 		newMeeting.date=auxDate.getTime();
 	}
 	Meeting.put(newMeeting).success(function(meet){
+		var meettingLink = "\n\nMeeting in Plan&Feedback Meeting Tool:\nhttp://pfmeeting.com/#/meeting/"+meet.meetingId;
+		if(calendarEvent!=null){
+			if(calendarEvent.description!=null){ calendarEvent.description.concat(meettingLink);
+			}else{
+				calendarEvent.description = meettingLink
+			}
+			
+
+			var request=gapi.client.calendar.events.update({calendarId: dataUserService.getDataUser().email,eventId:calendarEvent.id,resource:calendarEvent});
+			request.execute(function(response){
+				//console.log(response);
+			});
+		}
 		$location.url('/meeting/'+ meet.meetingId);
 	}).error(function(response, status){
 		$('.ngview').load('partials/error-view.html');
