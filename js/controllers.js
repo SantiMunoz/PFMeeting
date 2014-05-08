@@ -18,7 +18,7 @@ limitations under the License. */
 var planfeedControllers = angular.module('planfeedControllers', ['ngResource', 'ngRoute','ui.bootstrap']);
 
 
-planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 'Mock','Meeting','$timeout','$location','$filter', function ($scope, $routeParams, Mock,Meeting, $timeout,$location,$filter){
+planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 'Mock','Meeting','$timeout','$location','$filter','calendarEventService', function ($scope, $routeParams, Mock,Meeting, $timeout,$location,$filter,calendarEventService){
 
 
 	//notificación cuando queden 3 minutos
@@ -647,11 +647,17 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 }]);
 
 
-planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock','Meeting','$location', function ($scope, $routeParams, Mock,Meeting,$location){
+planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock','Meeting','$location','calendarEventService', function ($scope, $routeParams, Mock,Meeting,$location,calendarEventService){
 
 	var newMeeting = Mock.query();
+	var calendarEvent = calendarEventService.getCalendarEvent();
+	if(calendarEvent!=null){
+		newMeeting.title=calendarEvent.summary;
+		newMeeting.description=calendarEvent.description;
 
-
+		var auxDate = new Date(calendarEvent.start.dateTime);
+		newMeeting.date=auxDate.getTime();
+	}
 	Meeting.put(newMeeting).success(function(meet){
 		$location.url('/meeting/'+ meet.meetingId);
 	}).error(function(response, status){
@@ -667,18 +673,23 @@ planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', '
 
 
 
-planfeedControllers.controller('NavBarCtrl',['$modal','$window','$scope', '$routeParams', 'Mock','Meeting','$location', function ($modal,$window,$scope, $routeParams, Mock,Meeting,$location){
+planfeedControllers.controller('NavBarCtrl',['$modal','$window','$scope', '$routeParams', 'Mock','Meeting','$location','googleService','calendarEventService', function ($modal,$window,$scope, $routeParams, Mock,Meeting,$location,googleService,calendarEventService){
 
 
-
- $scope.openModal = function(size){
- 		var modalInstance = $modal.open({
+var modalInstance=null;
+ 	$scope.openModal = function(size){
+ 		 modalInstance= $modal.open({
 	      templateUrl: 'partials/calendarModal.html',
 	      controller: CalendarModalCtrl,
 	      size: size
 	    });
 
-	    
+    modalInstance.result.then(function (event) {
+      calendarEventService.setCalendarEvent(event);
+      $location.url('/meeting');
+
+
+    });
  };
 
 
@@ -690,18 +701,15 @@ planfeedControllers.controller('NavBarCtrl',['$modal','$window','$scope', '$rout
             //console.log(gapi.auth.getToken());
             
             gapi.client.load('calendar', 'v3', function(){
-            	var request=gapi.client.calendar.events.list({calendarId: data.email, maxResults:10, orderBy:'updated'});
+            	var startDate=new Date();
+            	var request=gapi.client.calendar.events.list({calendarId: data.email,orderBy:'updated',singleEvents:true, timeMin:startDate.toISOString()});
             	request.execute(function(resp) {
-            		console.log(resp);
-            		angular.forEach(resp.items, function(event){
-				   		$scope.events.push(event);
-						
-					});
+      				$scope.events= resp.items.reverse();
 				   	$scope.$apply();
             	 	
             	});
             });
-		   
+   
 
          }, function (err) {
              console.log('Failed: ' + err);
@@ -710,39 +718,15 @@ planfeedControllers.controller('NavBarCtrl',['$modal','$window','$scope', '$rout
 	    $modalInstance.dismiss('cancel');
 	  };
 
+	  $scope.eventSelected = function(event){
+	  	$modalInstance.close(event);
+	  };
+
   };
 
 }]);
 
-planfeedControllers.controller('CalendarModalCtrl',['$modalInstance','$window','$scope', '$routeParams', 'Mock','Meeting','$location','googleService', function ($modalInstance,$window,$scope, $routeParams, Mock,Meeting,$location,googleService){
 
-$scope.events=[];
-
-
-               googleService.login().then(function (data) {
-                    //console.log(gapi.auth.getToken());
-                    
-                    gapi.client.load('calendar', 'v3', function(){
-                    	var request=gapi.client.calendar.events.list({calendarId: data.email, maxResults:10, orderBy:'updated'});
-                    	request.execute(function(resp) {
-                    		console.log(resp);
-                    		angular.forEach(resp.items, function(event){
-						   		$scope.events.push(event);
-								
-							});
-						   	$scope.$apply();
-                    	 	
-                    	});
-                    });
-				   
-		
-                 }, function (err) {
-                     console.log('Failed: ' + err);
-                 });
-       
-
-
-}]);
 
 planfeedControllers.controller('ActaCtrl',['$scope', '$routeParams','Mock', 'Meeting', '$location','pdfservice', function ($scope, $routeParams,Mock,Meeting, $location,pdfservice){
 
