@@ -95,6 +95,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	};
 
 	var putMeeting = function(){
+
 		$scope.doingPut=true;
 		Meeting.put($scope.meeting).success(function(response){
 		if(!angular.equals(response.agenda, $scope.auxAgenda)){
@@ -340,6 +341,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	    $scope.meeting.agenda.push({name:$scope.formPointName, duration:durationInSec, originalDuration:durationInSec});
 	    $scope.formPointName = '';
 	    $scope.formPointDuration = '';
+
 	    putMeeting();
 	    document.getElementById("nameNewPoint").focus();
 	  };
@@ -357,6 +359,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	 			$scope.meeting.initOffTime=0;
 	 		}
 	 	}
+
 	 	putMeeting();
 	 	
 	 	
@@ -366,6 +369,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	 	var index = $scope.auxAgenda.indexOf(point);
 	 	$scope.auxAgenda[index].comment=point.comment;
 	 	$scope.meeting.agenda[index].comment=point.comment;
+
 	 	putMeeting();
 	 }
 
@@ -391,7 +395,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		 	$scope.meeting.status="pause";
 		 	play = false;
 		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
-		 	//putStatus("pause");
+
 		 	putMeeting();
 	 	}
 	 };
@@ -410,7 +414,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 				
 		 	});
 		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
-		 	//putStatus("stop");
+
 		 	putMeeting();
 	 	}
 	 };
@@ -426,7 +430,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 			 		point.duration = 0;
 			 	});
 		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
-			 //putStatus("finished");
+
 			 putMeeting();
 			 negativeTime=false;
 		}else{
@@ -609,9 +613,16 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
     	
     });
 
+    var firstDate=true;
     $("#datetimepicker").on("dp.change",function (e) {
-       $scope.meeting.date=$('#datetimepicker').data("DateTimePicker").getDate().valueOf();
-       putMeeting();
+    	if(firstDate){
+    		firstDate=false;
+    	}else{
+	       $scope.meeting.date=$('#datetimepicker').data("DateTimePicker").getDate().valueOf();
+	      
+	       putMeeting();
+    	}
+
     });
 
 	 $scope.$on(
@@ -649,6 +660,7 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 
 	var newMeeting = Mock.query();
 	var calendarEvent = calendarEventService.getCalendarEvent();
+	
 	if(calendarEvent!=null){
 		//console.log(calendarEvent);
 		newMeeting.title=calendarEvent.summary;
@@ -657,6 +669,7 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 		var auxDate = new Date(calendarEvent.start.dateTime);
 		newMeeting.date=auxDate.getTime();
 		newMeeting.isCalendarEvent=true;
+		newMeeting.creatorEmail=calendarEventService.getEmail();
 	}
 	Meeting.put(newMeeting).success(function(meet){
 		var meettingLink = "\n\nMeeting in Plan&Feedback Meeting Tool:\nhttp://pfmeeting.com/#/meeting/"+meet.meetingId;
@@ -715,16 +728,32 @@ $scope.signIn = function(authResult) {
 }
 
 $scope.processAuth = function(authResult) {
-	  
+   
+	gapi.client.load('oauth2', 'v2', function () {
+	    var request = gapi.client.oauth2.userinfo.get();
+	    request.execute(function (resp) {
+	        calendarEventService.setEmail(resp.email);
+	        
+	    });
+	});
    	if ($scope.isSignedIn) {
      	return 0;
    	}
-   	
+
    	if (authResult['code']) {
-   		GoogleService.postToken(authResult['code']).success(function(){
-   			console.log("entra");
-   			$scope.isSignedIn=true;
-   		});
+
+		gapi.client.load('oauth2', 'v2', function () {
+			    var request = gapi.client.oauth2.userinfo.get();
+			    request.execute(function (resp) {
+			        GoogleService.postToken(resp.email,authResult['code']).success(function(){
+			   			
+			   			$scope.isSignedIn=true;
+			   			
+			   		});
+			        
+			    });
+			});
+   		
     
     }
 
@@ -749,7 +778,7 @@ $window.renderSignIn = function() {
     'callback': $scope.signIn,
     'clientid': '17189049228-c3epg67458ki9p2k3udm9d31edra77l8.apps.googleusercontent.com',
     'redirecturi':'postmessage',
-    'scope': 'https://www.googleapis.com/auth/calendar',
+    'scope': 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email',
     'cookiepolicy': "single_host_origin",
     'accesstype': 'offline',
     'response_type':'code'
@@ -767,6 +796,7 @@ var modalInstance=null;
 	    });
 
     modalInstance.result.then(function (event) {
+
       calendarEventService.setCalendarEvent(event);
 
       $location.url('/meeting');

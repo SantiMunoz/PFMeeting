@@ -51,8 +51,8 @@ planfeedServices.factory('GoogleService', function($http){
   
   var googleService={};
 
-  googleService.postToken=function(code){
-    return  $http.post(baseURL+'googlerest/token', code,{headers: {'Content-Type':'text/plain'}});
+  googleService.postToken=function(email,code){
+    return  $http.post(baseURL+'googlerest/token/'+new String(email), code,{headers: {'Content-Type':'text/plain'}});
   }
   return googleService;
 

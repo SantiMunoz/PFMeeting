@@ -7,5 +7,6 @@
   "pauseDate": 0,
   "status":"",
   "initOffTime":0,
-  "isCalendarEvent":false
+  "isCalendarEvent":false,
+  "creatorEmail":""
 }
