@@ -538,7 +538,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 
 	 $scope.indexx = 0;
 	 $scope.auxPoint = null;
-	 var timer= null;
+
 	 var crono = function(){
  		
 	 	if($scope.auxAgenda[$scope.indexx] && play){
@@ -568,27 +568,26 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
  			$scope.indexx +=1;
  			}
 
- 			timer = $timeout(crono, 1000);
+ 			$scope.timer = $timeout(crono, 1000);
  		}	
 	 }
 
-	 var negativeTimer=null;
+
 	 var cronoNegative = function(){
 	 	if(negativeTime){
 	 		negativeSeconds-=1;
 
-	 		negativeTimer = $timeout(cronoNegative, 1000);
+	 		$scope.negativeTimer = $timeout(cronoNegative, 1000);
 	 	}
 	 }
 
-	 var timerRefresh = null
 	function refresh(){
 		if(!$scope.doingPut){
 			getMeeting();
 		}else{
 			$scope.doingPut=false;
 		}
-		timerRefresh=$timeout(refresh, 5000);
+		$scope.timerRefresh=$timeout(refresh, 5000);
 
 	};
 
@@ -615,14 +614,13 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
        putMeeting();
     });
 
-
 	 $scope.$on(
             "$destroy",
             function( event ) {
 
-                $timeout.cancel( timer );
-                $timeout.cancel(timerRefresh);
-      			$timeout.cancel(negativeTimer);
+                $timeout.cancel( $scope.timer );
+                $timeout.cancel($scope.timerRefresh);
+      			$timeout.cancel($scope.negativeTimer);
             }
         );
 
@@ -642,12 +640,12 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
     	}
     },true);
 
-	
+	 
 
 }]);
 
 
-planfeedControllers.controller('NewMeetingCtrl',['dataUserService','$scope', '$routeParams', 'Mock','Meeting','$location','calendarEventService', function (dataUserService,$scope, $routeParams, Mock,Meeting,$location,calendarEventService){
+planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock','Meeting','$location','calendarEventService', function ($scope, $routeParams, Mock,Meeting,$location,calendarEventService){
 
 	var newMeeting = Mock.query();
 	var calendarEvent = calendarEventService.getCalendarEvent();
@@ -658,36 +656,106 @@ planfeedControllers.controller('NewMeetingCtrl',['dataUserService','$scope', '$r
 
 		var auxDate = new Date(calendarEvent.start.dateTime);
 		newMeeting.date=auxDate.getTime();
+		newMeeting.isCalendarEvent=true;
 	}
 	Meeting.put(newMeeting).success(function(meet){
 		var meettingLink = "\n\nMeeting in Plan&Feedback Meeting Tool:\nhttp://pfmeeting.com/#/meeting/"+meet.meetingId;
-		if(calendarEvent!=null){
-			if(calendarEvent.description!=null){ calendarEvent.description.concat(meettingLink);
+		if(calendarEvent!=null&&meet.description==null){
+			if(calendarEvent.description!=null){ 
+				calendarEvent.description=calendarEvent.description.concat(meettingLink);
 			}else{
 				calendarEvent.description = meettingLink
 			}
-			
-
-			var request=gapi.client.calendar.events.update({calendarId: dataUserService.getDataUser().email,eventId:calendarEvent.id,resource:calendarEvent});
+			var request=gapi.client.calendar.events.update({calendarId: calendarEventService.getCalendarId(),eventId:calendarEvent.id,resource:calendarEvent});
 			request.execute(function(response){
 				//console.log(response);
 			});
 		}
+
+		
+
 		$location.url('/meeting/'+ meet.meetingId);
 	}).error(function(response, status){
 		$('.ngview').load('partials/error-view.html');
 	});
 
-}]);
-
-planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', 'Mock','Meeting','$location','googleService', function ($window,$scope, $routeParams, Mock,Meeting,$location,googleService){
 
 
 }]);
 
+planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', 'Mock','Meeting','$location', function ($window,$scope, $routeParams, Mock,Meeting,$location){
 
 
-planfeedControllers.controller('NavBarCtrl',['$modal','$window','$scope', '$routeParams', 'Mock','Meeting','$location','googleService','calendarEventService', function ($modal,$window,$scope, $routeParams, Mock,Meeting,$location,googleService,calendarEventService){
+}]);
+
+
+
+planfeedControllers.controller('NavBarCtrl',['GoogleService','$modal','$window','$scope', '$routeParams', 'Mock','Meeting','$location','$timeout','calendarEventService', function (GoogleService,$modal,$window,$scope, $routeParams, Mock,Meeting,$location,$timeout,calendarEventService){
+
+$scope.showSignInButton=true;
+$scope.isSignedIn=false;
+var firstTime=true;
+$scope.isSignedIn = false;
+
+$scope.signIn = function(authResult) {
+
+  if(firstTime){
+		firstTime=false;
+
+  }else{
+
+	$scope.$apply(function() {
+	    $scope.processAuth(authResult);
+	  });
+ 	  
+	  $scope.openModal();
+  }
+
+
+}
+
+$scope.processAuth = function(authResult) {
+	  
+   	if ($scope.isSignedIn) {
+     	return 0;
+   	}
+   	
+   	if (authResult['code']) {
+   		GoogleService.postToken(authResult['code']).success(function(){
+   			console.log("entra");
+   			$scope.isSignedIn=true;
+   		});
+    
+    }
+
+  //https://github.com/googleplus/gplus-photohunt-server-csharp/blob/master/PhotoHunt/js/controllers.js
+  // if (authResult['access_token']) {
+  //   $scope.immediateFailed = false;
+  //   // Successfully authorized, create session
+  //   PhotoHuntApi.signIn(authResult).then(function(response) {
+  //     $scope.signedIn(response.data);
+  //   });
+  // } else if (authResult['error']) {
+  //   if (authResult['error'] == 'immediate_failed') {
+  //     $scope.immediateFailed = true;
+  //   } else {
+  //     console.log('Error:' + authResult['error']);
+  //   }
+  // }
+}
+
+$window.renderSignIn = function() {
+  gapi.signin.render('importBtn', {
+    'callback': $scope.signIn,
+    'clientid': '17189049228-c3epg67458ki9p2k3udm9d31edra77l8.apps.googleusercontent.com',
+    'redirecturi':'postmessage',
+    'scope': 'https://www.googleapis.com/auth/calendar',
+    'cookiepolicy': "single_host_origin",
+    'accesstype': 'offline',
+    'response_type':'code'
+  });
+};
+
 
 
 var modalInstance=null;
@@ -700,34 +768,42 @@ var modalInstance=null;
 
     modalInstance.result.then(function (event) {
       calendarEventService.setCalendarEvent(event);
+
       $location.url('/meeting');
 
 
     });
+
+
  };
 
 
- var CalendarModalCtrl = function ($modalInstance,$window,$scope, $routeParams, Mock,Meeting,$location,googleService) {
- 	$scope.events=[];
+ var CalendarModalCtrl = function ($modalInstance,$window,$scope, $routeParams, Mock,Meeting,$location,calendarEventService) {
 
 
-       googleService.login().then(function (data) {
-            //console.log(gapi.auth.getToken());
-            
-            gapi.client.load('calendar', 'v3', function(){
-            	var startDate=new Date();
-            	var request=gapi.client.calendar.events.list({calendarId: data.email,orderBy:'updated',singleEvents:true, timeMin:startDate.toISOString()});
-            	request.execute(function(resp) {
-      				$scope.events= resp.items.reverse();
-				   	$scope.$apply();
-            	 	
-            	});
-            });
-   
+	gapi.client.load('calendar', 'v3', function(){
+    	
+    	var request=gapi.client.calendar.calendarList.list();
+    	request.execute(function(resp) {
+				$scope.calendars= resp.items;
+				$scope.calendarSelectedSummary = $scope.calendars[0].summary;
+				calendarEventService.setCalendarId($scope.calendars[0].id);
+		   	getCalendarEvents($scope.calendars[0].id);
+    	 	
+    	});
+    });
 
-         }, function (err) {
-             console.log('Failed: ' + err);
-         });
+      $scope.status = {
+	    isopen: false
+	  };
+
+
+	  $scope.toggleDropdown = function($event) {
+	    $event.preventDefault();
+	    $event.stopPropagation();
+	    
+	  };
+
 	  $scope.cancel = function () {
 	    $modalInstance.dismiss('cancel');
 	  };
@@ -736,7 +812,31 @@ var modalInstance=null;
 	  	$modalInstance.close(event);
 	  };
 
+	  var getCalendarEvents = function(calendarSelectedId){
+        	var startDate=new Date();
+        	var request=gapi.client.calendar.events.list({calendarId: calendarSelectedId,orderBy:'updated',singleEvents:true, timeMin:startDate.toISOString()});
+        	request.execute(function(resp) {
+        		calendarEventService.setCalendarId(calendarSelectedId);
+  				$scope.events= resp.items.reverse();
+			   	$scope.$apply();
+        	 	
+        	});
+	  };
+	  $scope.calendarSelected = function(calendarSelected){
+	  	$scope.calendarSelectedSummary=calendarSelected.summary;
+	  	getCalendarEvents(calendarSelected.id);
+	  }
+
   };
+
+
+  $scope.redirectToHome = function() {
+    	 $timeout.cancel( $scope.timer );
+         $timeout.cancel($scope.timerRefresh);
+		 $timeout.cancel($scope.negativeTimer);
+    	 $location.url("/"); 
+	};
+
 
 }]);
 

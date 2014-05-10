@@ -21,7 +21,6 @@ planfeedApp.service('pdfservice', [ function(){
                 pdf.getPage(1).then(function (page) {
                     var scale = 1.3;
                     var width = document.getElementById('mainContent').offsetWidth-45;
-                    console.log(width);
                     var viewport = page.getViewport(width / page.getViewport(1.0).width);
 
                     var canvas = document.getElementById(canvasId);

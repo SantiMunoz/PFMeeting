@@ -47,6 +47,9 @@ body {
 .modal {
     display: block;
 }
+#eventsList{
+	padding-top: 10px;
+}
 .navbar-btn{
 	margin-left: 10px;
 }

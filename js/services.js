@@ -47,3 +47,13 @@ planfeedServices.factory('Meeting', function($http){
     return planFeedAPI;
   });
 
+planfeedServices.factory('GoogleService', function($http){
+  
+  var googleService={};
+
+  googleService.postToken=function(code){
+    return  $http.post(baseURL+'googlerest/token', code,{headers: {'Content-Type':'text/plain'}});
+  }
+  return googleService;
+
+  });

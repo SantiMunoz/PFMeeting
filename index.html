@@ -18,12 +18,13 @@ limitations under the License. -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Plan&Feedback Meeting Tool</title>
 
-
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
-
-
+  <!-- IE Fix for HTML5 Tags -->
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
 
 </head>
 <body > 
@@ -38,12 +39,13 @@ limitations under the License. -->
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#/">P&F Meeting Tool </a>
+      <a class="navbar-brand" href ng-click="redirectToHome()">P&F Meeting Tool </a>
       
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse">
       <a role="button" class="btn btn-newMet navbar-btn navbar-right" href="#/meeting">New Meeting</a>
-       <button class="btn btn-newMet navbar-btn navbar-right" ng-click="openModal()"><img id="calendarIcon" src="img/calendarIcon.png"/>Import</button>
+       <button id="importBtn" class="btn btn-newMet navbar-btn navbar-right" ng-click="renderSignIn()"><img id="calendarIcon" src="img/calendarIcon.png"/>Import</button> 
+       
     </div>
   </div>
 </div>
@@ -70,7 +72,7 @@ limitations under the License. -->
   <script src="lib/jquery-ui-1.10.4.min.js"></script>
   <script src="lib/pdf.js"></script>
   <script src="lib/pdf.worker.js"></script>
-  
+ 
 
 
   <script src="js/app.js"></script>
@@ -82,7 +84,17 @@ limitations under the License. -->
   <script src="js/dndListDirective.js"></script>
   <script src="js/angular-round-progress-directive.js"></script>
   <script src="js/pdfservice.js"></script>
-  <script src="js/googleService.js"></script>
   <script src="js/calendarEventService.js"></script>
-    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+   <!-- <script src="https://apis.google.com/js/client.js?onload=renderSignIn"></script> -->
+      <script type="text/javascript">
+    (function () {
+      var po = document.createElement('script');
+      po.type = 'text/javascript';
+      po.async = true;
+      po.src = 'https://plus.google.com/js/client:plusone.js?onload=renderSignIn';
+      var s = document.getElementsByTagName('script')[0];
+      s.parentNode.insertBefore(po, s);
+    })();
+  </script>
+
 </html>
