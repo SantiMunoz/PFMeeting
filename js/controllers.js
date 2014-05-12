@@ -668,7 +668,7 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 
 		var auxDate = new Date(calendarEvent.start.dateTime);
 		newMeeting.date=auxDate.getTime();
-		newMeeting.isCalendarEvent=true;
+		newMeeting.calendarEventId=calendarEvent.id;
 		newMeeting.creatorEmail=calendarEventService.getEmail();
 	}
 	Meeting.put(newMeeting).success(function(meet){
@@ -703,7 +703,7 @@ planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', '
 
 
 
-planfeedControllers.controller('NavBarCtrl',['GoogleService','$modal','$window','$scope', '$routeParams', 'Mock','Meeting','$location','$timeout','calendarEventService', function (GoogleService,$modal,$window,$scope, $routeParams, Mock,Meeting,$location,$timeout,calendarEventService){
+planfeedControllers.controller('NavBarCtrl',['GoogleService','BaseURLService','$modal','$window','$scope', '$routeParams', 'Mock','Meeting','$location','$timeout','calendarEventService', function (GoogleService,BaseURLService,$modal,$window,$scope, $routeParams, Mock,Meeting,$location,$timeout,calendarEventService){
 
 $scope.showSignInButton=true;
 $scope.isSignedIn=false;
@@ -786,6 +786,12 @@ $window.renderSignIn = function() {
 };
 
 
+function S4() {
+   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+};
+function guid() {
+   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+};
 
 var modalInstance=null;
  	$scope.openModal = function(size){
@@ -798,6 +804,25 @@ var modalInstance=null;
     modalInstance.result.then(function (event) {
 
       calendarEventService.setCalendarEvent(event);
+     
+	      var uuid=guid();
+	      var idBasedOnCalendar = calendarEventService.getCalendarId().split('.').join("");
+	      idBasedOnCalendar = idBasedOnCalendar.split('@').join("");
+	      idBasedOnCalendar=idBasedOnCalendar+"3216adawd576awdawd41687awd4697313";
+	      var request=gapi.client.request({
+	      	path: '/calendar/v3/calendars/'+calendarEventService.getCalendarId()+'/events/watch',
+	      	method: 'POST',
+		    body:{id:idBasedOnCalendar,
+		      	type:'web_hook',
+		      	address: 'https://pfmeetingapi.appspot.com/api/googlerest/notifications',
+		      	params:{ttl:999999999999999999}
+		      	},
+		    headers: {'Content-Type':'application/json'}
+
+	      });
+	      request.execute(function(resp){
+	      	console.log(resp);
+	      });
 
       $location.url('/meeting');
 

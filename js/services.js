@@ -57,3 +57,13 @@ planfeedServices.factory('GoogleService', function($http){
   return googleService;
 
   });
+planfeedServices.factory('BaseURLService', function(){
+  
+  var baseUrlService={};
+
+  baseUrlService.getBaseURL=function(){
+    return  baseURL;
+  }
+  return baseUrlService;
+
+  });
