@@ -1,0 +1,55 @@
+<!-- Copyright 2014 Santi Muñoz Mallofre
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+
+
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" ng-click="cancel()">&times;</button>
+      <h4 class="modal-title">
+        <img id="calendarIcon" src="img/calendarIcon.png"/>
+        Select your own Google Calendar event</h4>
+    </div>
+    <div class="modal-body">
+
+    <div>
+      Events of:
+      <div class="btn-group" dropdown is-open="status.isopen">
+        <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled">
+          {{calendarSelectedSummary}} <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+          <li  ng-click="calendarSelected(calendar)" ng-repeat="calendar in calendars">
+            <a href>{{calendar.summary}}</a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+    <div id="eventsList" class="list-group">
+      <a href="" ng-click="eventSelected(event)" class="list-group-item" ng-repeat="event in events|limitTo:10">
+      	<h4 class="list-group-item-heading">{{event.summary}}</h4>
+        <p class="list-group-item-text">{{event.start.dateTime}}</p>
+        <p class="list-group-item-text">{{event.description}}</p>
+      </a>
+
+	  </div>
+
+      
+    </div>
+    <div class="modal-footer">
+      
+    </div>
+  </div><!-- /.modal-content -->
