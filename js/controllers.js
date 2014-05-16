@@ -509,7 +509,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		 		 	$scope.onFocusDescription=false;
 		 		 }
 	 	}
-	 	if($scope.meeting.calendarId!=null || !angular.equals("", $scope.meeting.calendarId)){
+	 	if(!angular.equals("", $scope.meeting.calendarId)){
 	 		putMeeting(true);
 	 	}else{
 	 		putMeeting();
@@ -627,7 +627,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
     	}else{
 	       $scope.meeting.date=$('#datetimepicker').data("DateTimePicker").getDate().valueOf();
 	      
-	       if($scope.meeting.calendarId!=null || !angular.equals("", $scope.meeting.calendarId)){
+	       if(!angular.equals("", $scope.meeting.calendarId)){
 	 			putMeeting(true);
 		 	}else{
 		 		putMeeting();
@@ -673,6 +673,7 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 	var calendarEvent = calendarEventService.getCalendarEvent();
 	
 	if(calendarEvent!=null){
+
 
 		newMeeting.title=calendarEvent.summary;
 		newMeeting.description=calendarEvent.description;
@@ -733,6 +734,11 @@ $scope.signIn = function(authResult) {
 
   if(firstTime){
 		firstTime=false;
+
+		var elem = document.getElementById("importBtn");
+		var elem2 = document.getElementById("importBtnDis");
+		elem2.style.display="none";
+		elem.style.display = "block";
 
   }else{
 
@@ -839,7 +845,7 @@ var modalInstance=null;
 
 
  var CalendarModalCtrl = function ($modalInstance,$window,$scope, $routeParams, Mock,Meeting,$location,calendarEventService) {
-
+ 	$scope.emptyEvents=false;
 
 	gapi.client.load('calendar', 'v3', function(){
     	
@@ -877,8 +883,12 @@ var modalInstance=null;
         	var request=gapi.client.calendar.events.list({calendarId: calendarSelectedId,orderBy:'updated',singleEvents:true, timeMin:startDate.toISOString()});
         	request.execute(function(resp) {
         		calendarEventService.setCalendarId(calendarSelectedId);
-  				//mostrar algun div de NO EVENTS AVALIEVE
-  				$scope.events= resp.items.reverse();
+  				if(typeof resp.items === 'undefined'){
+  					$scope.emptyEvents=true;
+  				}else{
+  					$scope.emptyEvents=false;
+  					$scope.events= resp.items.reverse();
+  				}
 			   	$scope.$apply();
         	 	
         	});

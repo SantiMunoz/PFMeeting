@@ -53,6 +53,7 @@ body {
 .navbar-btn{
 	margin-left: 10px;
 }
+
 #calendarIcon{
 	padding-right: 4px;
 }
@@ -60,6 +61,9 @@ body {
 color: #fff;
 background-color: #8a949b;
 border-color: #8a949b;
+}
+#importBtn{
+	display: none;
 }
 
 .navbar-inverse {

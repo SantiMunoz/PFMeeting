@@ -38,7 +38,11 @@ limitations under the License. -->
       </div>
 
     </div>
-    <div id="eventsList" class="list-group">
+
+    <div id="noEvents" ng-show="emptyEvents">
+      <h4>No events available</h4>
+    </div>
+    <div id="eventsList" class="list-group" ng-hide="emptyEvents">
       <a href="" ng-click="eventSelected(event)" class="list-group-item" ng-repeat="event in events|limitTo:10">
       	<h4 class="list-group-item-heading">{{event.summary}}</h4>
         <p class="list-group-item-text">{{event.start.dateTime}}</p>
