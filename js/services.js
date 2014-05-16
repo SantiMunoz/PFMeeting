@@ -38,8 +38,9 @@ planfeedServices.factory('Meeting', function($http){
       return baseURL+'meetings/'+meetingId+'/acta';
     }
 
-    planFeedAPI.put=function(meeting){
-      return $http.put(baseURL+'meetings',meeting);
+    planFeedAPI.put=function(meeting, updateEventCalendar){
+      
+      return $http.put(baseURL+'meetings',meeting,{params:{'updateEventCalendar':updateEventCalendar}});
     }
     planFeedAPI.putStatus=function(meetingId,status){
       return $http.put(baseURL+'meetings/'+new String(meetingId)+'/status', status,{headers: {'Content-Type':'text/plain'}});

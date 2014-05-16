@@ -52,6 +52,9 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 			if(!angular.equals(response.initOffTime,oldMeeting.initOffTime)){
 				oldMeeting.initOffTime=angular.copy(response.initOffTime)
 			}
+			if(!angular.equals(response.calendarEventId,oldMeeting.calendarEventId)){oldMeeting.calendarEventId=angular.copy(response.calendarEventId) }
+			if(!angular.equals(response.creatorEmail,oldMeeting.creatorEmail)){oldMeeting.creatorEmail=angular.copy(response.creatorEmail) }
+			if(!angular.equals(response.calendarId,oldMeeting.calendarId)){oldMeeting.calendarId=angular.copy(response.calendarId) }
 
 			$scope.meeting= angular.copy(oldMeeting);
 			if(angular.equals("",$scope.meeting.title)){
@@ -94,10 +97,10 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	});
 	};
 
-	var putMeeting = function(){
+	var putMeeting = function(updateEventCalendar){
 
 		$scope.doingPut=true;
-		Meeting.put($scope.meeting).success(function(response){
+		Meeting.put($scope.meeting, updateEventCalendar).success(function(response){
 		if(!angular.equals(response.agenda, $scope.auxAgenda)){
 			$scope.meeting.agenda = angular.copy(response.agenda);
 			actAuxAgenda();
@@ -506,8 +509,12 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		 		 	$scope.onFocusDescription=false;
 		 		 }
 	 	}
-
-	 	putMeeting();
+	 	if($scope.meeting.calendarId!=null || !angular.equals("", $scope.meeting.calendarId)){
+	 		putMeeting(true);
+	 	}else{
+	 		putMeeting();
+	 	}
+	 	
 	 };
 
 	 $scope.revertEditing = function (element) {
@@ -620,7 +627,11 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
     	}else{
 	       $scope.meeting.date=$('#datetimepicker').data("DateTimePicker").getDate().valueOf();
 	      
-	       putMeeting();
+	       if($scope.meeting.calendarId!=null || !angular.equals("", $scope.meeting.calendarId)){
+	 			putMeeting(true);
+		 	}else{
+		 		putMeeting();
+		 	}
     	}
 
     });
@@ -662,7 +673,7 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 	var calendarEvent = calendarEventService.getCalendarEvent();
 	
 	if(calendarEvent!=null){
-		//console.log(calendarEvent);
+
 		newMeeting.title=calendarEvent.summary;
 		newMeeting.description=calendarEvent.description;
 
@@ -670,10 +681,11 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 		newMeeting.date=auxDate.getTime();
 		newMeeting.calendarEventId=calendarEvent.id;
 		newMeeting.creatorEmail=calendarEventService.getEmail();
+		newMeeting.calendarId=calendarEventService.getCalendarId();
 	}
 	Meeting.put(newMeeting).success(function(meet){
-		var meettingLink = "\n\nMeeting in Plan&Feedback Meeting Tool:\nhttp://pfmeeting.com/#/meeting/"+meet.meetingId;
-		if(calendarEvent!=null&&meet.description==null){
+		var meettingLink = "\nMeeting in Plan&Feedback Meeting Tool:\nhttp://pfmeeting.com/#/meeting/"+meet.meetingId;
+		if(calendarEvent!=null){
 			if(calendarEvent.description!=null){ 
 				calendarEvent.description=calendarEvent.description.concat(meettingLink);
 			}else{
@@ -710,6 +722,13 @@ $scope.isSignedIn=false;
 var firstTime=true;
 $scope.isSignedIn = false;
 
+$scope.newMeeting=function(){
+	calendarEventService.setCalendarEvent(null);
+	calendarEventService.setEmail(null);
+	calendarEventService.setCalendarId(null);
+	$location.url('/meeting');
+};
+
 $scope.signIn = function(authResult) {
 
   if(firstTime){
@@ -725,7 +744,7 @@ $scope.signIn = function(authResult) {
   }
 
 
-}
+};
 
 $scope.processAuth = function(authResult) {
    
@@ -757,20 +776,6 @@ $scope.processAuth = function(authResult) {
     
     }
 
-  //https://github.com/googleplus/gplus-photohunt-server-csharp/blob/master/PhotoHunt/js/controllers.js
-  // if (authResult['access_token']) {
-  //   $scope.immediateFailed = false;
-  //   // Successfully authorized, create session
-  //   PhotoHuntApi.signIn(authResult).then(function(response) {
-  //     $scope.signedIn(response.data);
-  //   });
-  // } else if (authResult['error']) {
-  //   if (authResult['error'] == 'immediate_failed') {
-  //     $scope.immediateFailed = true;
-  //   } else {
-  //     console.log('Error:' + authResult['error']);
-  //   }
-  // }
 }
 
 $window.renderSignIn = function() {
@@ -872,6 +877,7 @@ var modalInstance=null;
         	var request=gapi.client.calendar.events.list({calendarId: calendarSelectedId,orderBy:'updated',singleEvents:true, timeMin:startDate.toISOString()});
         	request.execute(function(resp) {
         		calendarEventService.setCalendarId(calendarSelectedId);
+  				//mostrar algun div de NO EVENTS AVALIEVE
   				$scope.events= resp.items.reverse();
 			   	$scope.$apply();
         	 	

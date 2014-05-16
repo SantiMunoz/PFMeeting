@@ -8,5 +8,6 @@
   "status":"",
   "initOffTime":0,
   "calendarEventId":"",
-  "creatorEmail":""
+  "creatorEmail":"",
+  "calendarId":""
 }
