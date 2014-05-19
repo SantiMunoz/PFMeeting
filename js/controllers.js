@@ -61,16 +61,22 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 
 			$scope.meeting= angular.copy(oldMeeting);
 			if(angular.equals("",$scope.meeting.title)){
-				$scope.auxTitle="";
-				$scope.onFocusTitle=true;
+				if(!$scope.onFocusTitle){
+					$scope.auxTitle="";
+					$scope.onFocusTitle=true;
+				}
+
 			}else{
 
 				$scope.onFocusTitle=false;
 			}
 
 			if(angular.equals("",$scope.meeting.description)){
-				$scope.auxDescription="";
-				$scope.onFocusDescription=true;
+				if(!$scope.onFocusDescription){
+					$scope.auxDescription="";
+					$scope.onFocusDescription=true;
+				}
+				
 
 			}else{
 				$scope.onFocusDescription=false;
@@ -135,6 +141,11 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	getMeeting();
 	refresh();
 	reqPermissionOnLoad();
+	$scope.totalRemaining={
+			value:parseInt(0),
+			percentage:parseInt(0),
+			total:parseInt(0),
+		};
 
 
 	//ask for notification permission
@@ -238,6 +249,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		}else if(angular.equals($scope.meeting.status, "pause")){
 
 			play=false;
+
 		}else if(angular.equals($scope.meeting.status, "stop")){
 			play=false;
 			negativeTimed=negativeTime=false;
@@ -246,7 +258,9 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 			angular.forEach($scope.meeting.agenda, function(point){
 				point.duration = point.originalDuration;
 			});
+
 			$scope.auxAgenda = angular.copy($scope.meeting.agenda);
+
 		}else if(angular.equals($scope.meeting.status, "finished")){
 			play=false;
 			angular.forEach($scope.meeting.agenda, function(point){
@@ -260,6 +274,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 
 		 		negativeSeconds=0- Math.round(($scope.meeting.timeFinish - $scope.meeting.initOffTime)/1000);
 		 	}
+	
 		}else if(angular.equals($scope.meeting.status, "offTime")){
 			play=false;
 			angular.forEach($scope.meeting.agenda, function(point){
@@ -273,6 +288,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		 	cronoNegative();
 		 	
 		}
+		getTotalRemaining();
 	};
 
 	function actPointsDuration(elapsedTime){
@@ -305,7 +321,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	var negativeSeconds=0;
 	var cronoPlayed = false;
 
-	$scope.getTotalRemaining = function(){
+	var getTotalRemaining = function(){
 		var totalRemaining={
 			value:parseInt(0),
 			percentage:parseInt(0),
@@ -333,7 +349,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 			totalRemaining.value= negativeSeconds;
 			totalRemaining.percentage = 100;
 		}
-		return totalRemaining;
+		$scope.totalRemaining=totalRemaining;
 		
 	};
 
@@ -353,7 +369,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	    $scope.meeting.agenda.push({name:$scope.formPointName, duration:durationInSec, originalDuration:durationInSec});
 	    $scope.formPointName = '';
 	    $scope.formPointDuration = '';
-
+	    getTotalRemaining();
 	    if(!angular.equals("", $scope.meeting.calendarId)){
 	 		putMeeting(true);
 	 	}else{
@@ -370,12 +386,11 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	 		play=false;
 			if($scope.meeting.status != "stop"){
 				$scope.meeting.status="stop";
-	 			//putStatus("stop");
 	 			negativeTimed=negativeTime = false;
 	 			$scope.meeting.initOffTime=0;
 	 		}
 	 	}
-
+		getTotalRemaining();
 	 	if(!angular.equals("", $scope.meeting.calendarId)){
 	 		putMeeting(true);
 	 	}else{
@@ -435,7 +450,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 				
 		 	});
 		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
-
+		 	getTotalRemaining();
 		 	putMeeting();
 	 	}
 	 };
@@ -446,17 +461,20 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 
 	 	if(!angular.equals($scope.meeting.status,"finished")){
 	 		$scope.meeting.status="finished";
-	 		$scope.timeRemainingWhenFinish=$filter('HHmmssFormat')($scope.getTotalRemaining().value);
+	 		$scope.timeRemainingWhenFinish=$filter('HHmmssFormat')($scope.totalRemaining.value);
 		 	angular.forEach($scope.auxAgenda, function(point){
 			 		point.duration = 0;
 			 	});
 		 	$scope.meeting.agenda=angular.copy($scope.auxAgenda);
-
+		 	play = false;
+		 	negativeTime=false;
+		 	getTotalRemaining();
 			 putMeeting();
-			 negativeTime=false;
+			 
 		}else{
-			$scope.timeRemainingWhenFinish=$filter('HHmmssFormat')($scope.getTotalRemaining().value);
+			$scope.timeRemainingWhenFinish=$filter('HHmmssFormat')($scope.totalRemaining.value);
 		}
+
 	 };
 
 	 $scope.getMessageFinish=function(){
@@ -596,7 +614,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
  			}else{
  			$scope.indexx +=1;
  			}
-
+ 			getTotalRemaining();
  			$scope.timer = $timeout(crono, 1000);
  		}	
 	 }
@@ -605,7 +623,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	 var cronoNegative = function(){
 	 	if(negativeTime){
 	 		negativeSeconds-=1;
-
+	 		getTotalRemaining();
 	 		$scope.negativeTimer = $timeout(cronoNegative, 1000);
 	 	}
 	 }
