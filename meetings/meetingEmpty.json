@@ -9,5 +9,6 @@
   "initOffTime":0,
   "calendarEventId":"",
   "creatorEmail":"",
-  "calendarId":""
+  "calendarId":"",
+  "timeFinish":0
 }

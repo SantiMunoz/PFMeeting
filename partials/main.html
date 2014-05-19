@@ -11,8 +11,21 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License. -->
-<div class="jumbotron">
-  <h1>Welcome to Plan&Feedback Meeting Tool</h1>
-  <p>You can create a new meeting with the New Meeting button</p>
-  
+<div class="titleHome">
+ <h1>Plan&Feedback Meeting Tool</h1>
+ <h3>Plan better your meetings, Keep them under control</h3>
+<h2>Increase your productivity</h2>
+</div>
+ 
+ <div class="carouselConatiner ">
+<carousel interval="myInterval">
+      <slide ng-repeat="slide in slides" active="slide.active">
+        <img ng-src="{{slide.image}}" style="margin:auto;">
+        <div class="carousel-caption">
+          <h4>{{slide.title}}</h4>
+          <p>{{slide.description}}</p>
+        </div>
+      </slide>
+</carousel>
+
 </div>

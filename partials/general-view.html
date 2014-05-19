@@ -20,9 +20,9 @@ limitations under the License. -->
    <div id="title-wraper"> 
     <div id="title" ng-class="{editing: onFocusTitle}" >
 
-        <div class="view">
+        <div class="view clearfix">
           
-          <label ng-click="saveOldData('title')"><a href="">{{meeting.title}}</a></label>
+         <strong> <a href="" class="textP" ng-click="saveOldData('title')">{{meeting.title}}</a></strong>
           <button ng-click="saveOldData('title')" type="button" class="submitEditButtonTitle"> <span class="glyphicon glyphicon-edit"/></button> 
         </div>
         <form ng-submit="doneEditing('title')">
@@ -49,10 +49,10 @@ limitations under the License. -->
   <div id="description-wraper"> 
     <div id="description" ng-class="{editing: onFocusDescription}">
 
-        <div class="view">
+        <div class="view clearfix">
           
-          <label ng-click="saveOldData('description')"><a href="">{{meeting.description}}</a></label>
-          <button ng-click="saveOldData('description')" type="button" class="submitEditButtonDesc"> <span class="glyphicon glyphicon-edit"/></button> 
+         <strong> <a class="textP" href="" ng-click="saveOldData('description')">{{meeting.description}}</a></strong>
+          <button ng-click="saveOldData('description')" type="button" class="submitEditButtonDesc"> <span class="glyphicon glyphicon-edit"/></button>
         </div>
         <form id="descriptionForm" ng-submit="doneEditing('description')">
           <textarea rows='2'  id="descriptionTextArea" class="edit" placeholder="Add Meeting Description" ng-trim="false" ng-model="auxDescription"  planfeed-escape="revertEditing('description')" planfeed-focus="onFocusDescription"> </textarea>
@@ -62,7 +62,7 @@ limitations under the License. -->
   </div>
 
   <div id="agenda">
-    <h4>Agenda of the meeting:   <button ng-click="goActa()"><span class="glyphicon glyphicon-new-window"/></button></h4>
+    <h4>Agenda of the meeting:  </h4>
    
     <div id="points">
         <accordion close-others="true"  dnd-list="auxAgenda">
@@ -101,7 +101,7 @@ limitations under the License. -->
       </div> 
    
   </div>
-
+   <h4><button id="btnGoActa" class="btn btn-newMet  " ng-click="goActa()">Acta of the meeting<span id="iconGoActa" class="glyphicon glyphicon-new-window"/></button></h4>
 
   <ul class="list-inline list-center">
       
