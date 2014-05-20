@@ -770,26 +770,36 @@ planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', '
 
 
 
-    slides.push({
+  slides.push({
   	image:'img/createBtns.png',
   	title:'Create New Meeting',
   	description: 'Only click there!'
   });
-        slides.push({
+  slides.push({
   	image:'img/import.png',
   	title:'Import from Google Calendar',
   	description: 'You can import your own meetings from Google Calendar'
   });
-            slides.push({
+  slides.push({
   	image:'img/meeting1.png',
-  	title:'Make your meeting',
+  	title:'',
+  	description: ''
+  });
+  slides.push({
+  	image:'img/alert.png',
+  	title:'Desktop Alerts',
+  	description: 'Keep meeting under control'
+  });
+  slides.push({
+  	image:'img/acta.png',
+  	title:'Acta of the meeting',
   	description: ''
   });
   
-    slides.push({
+  slides.push({
   	image:'img/chromeStore.png',
-  	title:'P&FMeeting Plugin',
-  	description: 'Create your meetings quickly'
+  	title:'',
+  	description: ''
   });
 }]);
 
