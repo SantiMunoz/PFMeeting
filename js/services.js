@@ -14,7 +14,7 @@ limitations under the License. */
 'use strict';
 
 //var baseURL = 'http://pfmeeting.com/api/';
-var baseURL ='http://localhost:8080/PlanFeedAPI/api/'
+var baseURL ='http://localhost:8080/PFMeetingAPI/api/'
 var planfeedServices = angular.module('planfeedServices', ['ngResource', 'ngRoute']);
 
 planfeedServices.factory('Mock', ['$resource',

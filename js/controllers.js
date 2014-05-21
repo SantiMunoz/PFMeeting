@@ -146,6 +146,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 			percentage:parseInt(0),
 			total:parseInt(0),
 		};
+	
 
 
 	//ask for notification permission
@@ -245,7 +246,6 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 			var elapsedTime = Math.round(((new Date()).getTime() - $scope.meeting.init)/1000);
 			actPointsDuration(elapsedTime);
 			play=true;
-			crono();
 		}else if(angular.equals($scope.meeting.status, "pause")){
 
 			play=false;
@@ -285,7 +285,6 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 
 		 	negativeSeconds=0- Math.round(((new Date()).getTime() - $scope.meeting.initOffTime)/1000);
 		 	negativeTimed=negativeTime=true;
-		 	cronoNegative();
 		 	
 		}
 		getTotalRemaining();
@@ -357,7 +356,6 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		if(cronoPlayed&&play&&!angular.equals($scope.meeting.status,"finished")){
 			play=false;
 			negativeTimed=negativeTime=true;
-			cronoNegative();
 			$scope.meeting.status="offTime";
 			putStatus("offTime");
 		}
@@ -419,7 +417,6 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	 	if(!angular.equals($scope.meeting.status,"play") &&$scope.auxAgenda.length!=0 &&!negativeTime&&!angular.equals($scope.meeting.status,"finished")){
 	 		$scope.meeting.status="play";
 	 		play=true;
-			crono();
 			putStatus("play");
 	 	}
 	 	
@@ -585,9 +582,9 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 
 	 $scope.indexx = 0;
 	 $scope.auxPoint = null;
-
+	 $scope.control=0;
 	 var crono = function(){
- 		
+ 	
 	 	if($scope.auxAgenda[$scope.indexx] && play){
  			$scope.auxPoint = $scope.auxAgenda[$scope.indexx]
  			if($scope.auxPoint.duration>0){
@@ -615,19 +612,23 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
  			$scope.indexx +=1;
  			}
  			getTotalRemaining();
- 			$scope.timer = $timeout(crono, 1000);
- 		}	
-	 }
+ 			
+ 			
+ 		}
+ 		$scope.timer = $timeout(crono, 1000);
 
+	 };
+	 crono();
 
 	 var cronoNegative = function(){
 	 	if(negativeTime){
 	 		negativeSeconds-=1;
 	 		getTotalRemaining();
-	 		$scope.negativeTimer = $timeout(cronoNegative, 1000);
+	 		
 	 	}
+	 	$scope.negativeTimer = $timeout(cronoNegative, 1000);
 	 }
-
+	 cronoNegative();
 	function refresh(){
 		if(!$scope.doingPut){
 			getMeeting();
