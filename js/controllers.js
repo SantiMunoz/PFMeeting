@@ -209,6 +209,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 		}
 		
 		var scopeAgendaLength = $scope.meeting.agenda.length;
+
 		
 		for(var i=0;i<scopeAgendaLength; i++){
 			if(i<auxAgendaLength){
@@ -233,7 +234,8 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 				$scope.auxAgenda.splice(i,1);
 			}
 		}
-	
+		
+		getTotalRemaining();
 	};
 
 	 var play=false;
@@ -591,6 +593,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
  				$scope.auxAgenda[$scope.indexx].duration = parseInt($scope.auxPoint.duration) -1;
  				cronoPlayed=true;
  				if($scope.auxAgenda[$scope.indexx].duration ==timeToAlert*60){
+ 					$('#notificationAudio')[0].play();
  					if(!onMobileDevice){
 	 					if (Notification && Notification.permission === "granted") { 						
 					        var n = new Notification("Alert!", {body: $scope.auxAgenda[$scope.indexx].name+" of "+$scope.meeting.title+": less than "+timeToAlert+" minutes.",
@@ -751,12 +754,12 @@ planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock
 			request.execute(function(response){
 				//console.log(response);
 			});
-		}
 
-		
+		}
 
 		$location.url('/meeting/'+ meet.meetingId);
 	}).error(function(response, status){
+
 		$('.ngview').load('partials/error-view.html');
 	});
 
@@ -768,6 +771,8 @@ planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', '
 	$scope.myInterval = 5000;
   var slides = $scope.slides = [];
 
+
+  	
 
 
 
@@ -806,7 +811,7 @@ planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', '
 
 
 
-planfeedControllers.controller('NavBarCtrl',['GoogleService','BaseURLService','$modal','$window','$scope', '$routeParams', 'Mock','Meeting','$location','$timeout','calendarEventService', function (GoogleService,BaseURLService,$modal,$window,$scope, $routeParams, Mock,Meeting,$location,$timeout,calendarEventService){
+planfeedControllers.controller('NavBarCtrl',['$rootScope','GoogleService','BaseURLService','$modal','$window','$scope', '$routeParams', 'Mock','Meeting','$location','$timeout','calendarEventService', function ($rootScope,GoogleService,BaseURLService,$modal,$window,$scope, $routeParams, Mock,Meeting,$location,$timeout,calendarEventService){
 
 $scope.showSignInButton=true;
 $scope.isSignedIn=false;
@@ -821,29 +826,31 @@ $scope.newMeeting=function(){
 };
 
 $scope.signIn = function(authResult) {
+ 	
+  // if(firstTime){
+		// firstTime=false;
 
-  if(firstTime){
-		firstTime=false;
+		// var elem = document.getElementById("importBtn");
+		// var elem2 = document.getElementById("importBtnDis");
+		// elem2.style.display="none";
+		// elem.style.display = "block";
 
-		var elem = document.getElementById("importBtn");
-		var elem2 = document.getElementById("importBtnDis");
-		elem2.style.display="none";
-		elem.style.display = "block";
+  // }else{
 
-  }else{
 
 	$scope.$apply(function() {
+
 	    $scope.processAuth(authResult);
 	  });
  	  
 	  $scope.openModal();
-  }
+  //}
 
 
 };
 
 $scope.processAuth = function(authResult) {
-   
+   	
 	gapi.client.load('oauth2', 'v2', function () {
 	    var request = gapi.client.oauth2.userinfo.get();
 	    request.execute(function (resp) {
@@ -877,6 +884,7 @@ $scope.processAuth = function(authResult) {
 }
 
 $window.renderSignIn = function() {
+	// gapi.auth.signOut();
   gapi.signin.render('importBtn', {
     'callback': $scope.signIn,
     'clientid': '17189049228-c3epg67458ki9p2k3udm9d31edra77l8.apps.googleusercontent.com',
@@ -884,19 +892,20 @@ $window.renderSignIn = function() {
     'scope': 'https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email',
     'cookiepolicy': "single_host_origin",
     'accesstype': 'offline',
-    'response_type':'code'
+    'response_type':'code',
+    'approvalprompt':'force'
   });
 };
 
 
-function S4() {
-   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-};
-function guid() {
-   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
-};
+	function S4() {
+	   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+	};
+	function guid() {
+	   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+	};
 
-var modalInstance=null;
+	var modalInstance=null;
  	$scope.openModal = function(size){
  		 modalInstance= $modal.open({
 	      templateUrl: 'partials/calendarModal.html',
@@ -934,11 +943,13 @@ var modalInstance=null;
 
 
  };
+   
 
 
- var CalendarModalCtrl = function ($modalInstance,$window,$scope, $routeParams, Mock,Meeting,$location,calendarEventService) {
+ 
+ var CalendarModalCtrl = function ($rootScope, $modalInstance,$window,$scope, $routeParams, Mock,Meeting,$location,calendarEventService) {
  	$scope.emptyEvents=false;
-
+ 	$scope.dateSelected=false;
 	gapi.client.load('calendar', 'v3', function(){
     	
     	var request=gapi.client.calendar.calendarList.list();
@@ -956,6 +967,11 @@ var modalInstance=null;
 	  };
 
 
+ 
+
+
+
+   
 	  $scope.toggleDropdown = function($event) {
 	    $event.preventDefault();
 	    $event.stopPropagation();
@@ -970,9 +986,31 @@ var modalInstance=null;
 	  	$modalInstance.close(event);
 	  };
 
+	  $rootScope.actEventsList = function(date){
+	  	$scope.dateSelected=true;
+	  	var startDate=date;
+
+	  	var endDate=new Date(new Date(date).getTime() + 60 * 60 * 24 * 1000);
+	  	endDate.setHours(0);
+	  	endDate.setMinutes(0);
+	  	endDate.setSeconds(0);
+        	var request=gapi.client.calendar.events.list({calendarId: calendarEventService.getCalendarId(),orderBy:'startTime',singleEvents:true, timeMin:startDate.toISOString(), timeMax:endDate.toISOString()});
+        	request.execute(function(resp) {
+        		
+  				if(typeof resp.items === 'undefined'){
+  					$scope.emptyEvents=true;
+  				}else{
+  					$scope.emptyEvents=false;
+  					$scope.events= resp.items.reverse();
+  				}
+			   	$scope.$apply();
+        	 	
+        	});
+	  }
+
 	  var getCalendarEvents = function(calendarSelectedId){
         	var startDate=new Date();
-        	var request=gapi.client.calendar.events.list({calendarId: calendarSelectedId,orderBy:'updated',singleEvents:true, timeMin:startDate.toISOString()});
+        	var request=gapi.client.calendar.events.list({calendarId: calendarSelectedId,orderBy:'updated',singleEvents:false, timeMin:startDate.toISOString(), maxResults:12});
         	request.execute(function(resp) {
         		calendarEventService.setCalendarId(calendarSelectedId);
   				if(typeof resp.items === 'undefined'){
@@ -1027,6 +1065,33 @@ planfeedControllers.controller('ActaCtrl',['$scope', '$routeParams','Mock', 'Mee
 	};
 	$scope.linkActa=Meeting.getUrlActa($routeParams.meetingId);
 	pdfservice.render('pdfCanvas', Meeting.getUrlActa($routeParams.meetingId));
+	 
+
+}]);
+
+planfeedControllers.controller('DateTimePickerCtrl',['$rootScope','$scope', function ($rootScope,$scope){
+
+	 $('#datetimepicker2').datetimepicker({
+
+    	pickTime: false
+    	
+    });
+
+	 var firstDate=true;
+	 $(".input-group-addon").click(function () {
+	 	if(firstDate){
+
+	 		$rootScope.actEventsList(new Date());
+	 		firstDate=false;
+	 	}
+    	
+	 });
+
+    $("#datetimepicker2").on("dp.change",function (e) {
+
+    		$rootScope.actEventsList(e.date);
+
+    });
 	 
 
 }]);

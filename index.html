@@ -45,7 +45,7 @@ limitations under the License. -->
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse">
       <button  class="btn btn-newMet navbar-btn navbar-right" ng-click="newMeeting()" >New Meeting</button>
-       <button id="importBtnDis" class="btn btn-newMet navbar-btn navbar-right" disabled ><img id="calendarIcon" src="img/calendarIcon.png"/>Import</button> 
+<!--        <button id="importBtnDis" class="btn btn-newMet navbar-btn navbar-right" disabled ><img id="calendarIcon" src="img/calendarIcon.png"/>Import</button>  -->
        <button id="importBtn" class="btn btn-newMet navbar-btn navbar-right" ng-click="renderSignIn()"><img id="calendarIcon" src="img/calendarIcon.png"/>Import</button> 
        
     </div>
@@ -55,7 +55,8 @@ limitations under the License. -->
   <div class="contentt" id="mainContent">
 
        <div ng-view class="ngview"></div> 
-       <div id="footer"></div>
+       <div id="footer">
+       </div>
   </div>
 <div id="footer"></div>
     <script src="lib/jquery-1.11.1.min.js"></script>

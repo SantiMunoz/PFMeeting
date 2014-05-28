@@ -98,7 +98,7 @@ background-color: #8a949b;
 border-color: #8a949b;
 }
 #importBtn{
-	display: none;
+	/*display: none;*/
 }
 
 .navbar-inverse {

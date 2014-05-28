@@ -39,11 +39,30 @@ limitations under the License. -->
 
     </div>
 
+
+   <div class="row date-wraper">
+      
+    <div class='col-sm-4'>
+       
+      <div class="form-group" ng-controller="DateTimePickerCtrl">
+        
+          <div class='input-group date' id='datetimepicker2' data-date-format="YYYY/MM/DD">
+              <input type='text' class="form-control" />
+              <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+              </span>
+          </div>
+      </div>
+    </div>
+  </div>
+
     <div id="noEvents" ng-show="emptyEvents">
       <h4>No events available</h4>
     </div>
+    <div id="mainEvents" ng-hide="dateSelected || emptyEvents">
+      <h4>Latest events updated</h4>
+    </div>
     <div id="eventsList" class="list-group" ng-hide="emptyEvents">
-      <a href="" ng-click="eventSelected(event)" class="list-group-item" ng-repeat="event in events|limitTo:10">
+      <a href="" ng-click="eventSelected(event)" class="list-group-item" ng-repeat="event in events">
       	<h4 class="list-group-item-heading">{{event.summary}}</h4>
         <p class="list-group-item-text">{{event.start.dateTime}}</p>
         <p class="list-group-item-text">{{event.description}}</p>
