@@ -32,9 +32,6 @@ planfeedApp.config(['$routeProvider','$locationProvider',function($routeProvider
 	}).when('/meeting/:meetingId', {
 		templateUrl: 'partials/general-view.html',
 		controller: 'PlanfeedGeneralCtrl'
-	}).when('/meeting', {
-		templateUrl: 'partials/new-meeting.html',
-		controller: 'NewMeetingCtrl'
 	}).when('/', {
 		templateUrl: 'partials/main.html',
 		controller: 'MainCtrl'

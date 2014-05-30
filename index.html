@@ -44,7 +44,7 @@ limitations under the License. -->
       
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse">
-      <button  class="btn btn-newMet navbar-btn navbar-right" ng-click="newMeeting()" >New Meeting</button>
+      <button  class="btn btn-newMet navbar-btn navbar-right" ng-click="newMeetingNav()" >New Meeting</button>
 <!--        <button id="importBtnDis" class="btn btn-newMet navbar-btn navbar-right" disabled ><img id="calendarIcon" src="img/calendarIcon.png"/>Import</button>  -->
        <button id="importBtn" class="btn btn-newMet navbar-btn navbar-right" ng-click="renderSignIn()"><img id="calendarIcon" src="img/calendarIcon.png"/>Import</button> 
        
@@ -53,8 +53,8 @@ limitations under the License. -->
 </div>
 
   <div class="contentt" id="mainContent">
-
-       <div ng-view class="ngview"></div> 
+        <center><img ng-show="creatingMeeting" src="img/loading.gif" alt="Creating meeting..."></center>
+       <div ng-show="!creatingMeeting" ng-view class="ngview"></div> 
        <div id="footer">
        </div>
   </div>
@@ -73,7 +73,6 @@ limitations under the License. -->
 
   
   <script src="js/app.js"></script>
-  <script src="js/controllers.js"></script>
   <script src="js/filters.js"></script>
   <script src="js/services.js"></script>
   <script src="js/planfeedFocus.js"></script>
@@ -82,7 +81,8 @@ limitations under the License. -->
   <script src="js/angular-round-progress-directive.js"></script>
   <script src="js/pdfservice.js"></script>
   <script src="js/calendarEventService.js"></script>
-    <script src="js/controllers.js"></script>
+  <script src="js/intervalService.js"></script>
+  <script src="js/controllers.js"></script>
    <!-- <script src="https://apis.google.com/js/client.js?onload=renderSignIn"></script> -->
       <script type="text/javascript">
     (function () {

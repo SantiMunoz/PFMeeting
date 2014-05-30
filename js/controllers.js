@@ -18,7 +18,7 @@ limitations under the License. */
 var planfeedControllers = angular.module('planfeedControllers', ['ngResource', 'ngRoute','ui.bootstrap']);
 
 
-planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 'Mock','Meeting','$timeout','$location','$filter','calendarEventService', function ($scope, $routeParams, Mock,Meeting, $timeout,$location,$filter,calendarEventService){
+planfeedControllers.controller('PlanfeedGeneralCtrl',['IntervalService','$scope', '$routeParams', 'Mock','Meeting','$timeout','$interval','$location','$filter','calendarEventService', function (IntervalService,$scope, $routeParams, Mock,Meeting, $timeout,$interval,$location,$filter,calendarEventService){
 
 
 	//notificación cuando queden 3 minutos
@@ -586,14 +586,16 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 	 $scope.auxPoint = null;
 	 $scope.control=0;
 	 var crono = function(){
- 	
+ 		
 	 	if($scope.auxAgenda[$scope.indexx] && play){
  			$scope.auxPoint = $scope.auxAgenda[$scope.indexx]
  			if($scope.auxPoint.duration>0){
  				$scope.auxAgenda[$scope.indexx].duration = parseInt($scope.auxPoint.duration) -1;
  				cronoPlayed=true;
  				if($scope.auxAgenda[$scope.indexx].duration ==timeToAlert*60){
- 					$('#notificationAudio')[0].play();
+ 					var sound = $('#notificationAudio')[0];
+ 					sound.load();
+    				sound.play();
  					if(!onMobileDevice){
 	 					if (Notification && Notification.permission === "granted") { 						
 					        var n = new Notification("Alert!", {body: $scope.auxAgenda[$scope.indexx].name+" of "+$scope.meeting.title+": less than "+timeToAlert+" minutes.",
@@ -604,35 +606,32 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$scope', '$routeParams', 
 							 }
 					    }
 					}else{
-						var alertDate=new Date().getTime();
 						alert($scope.auxAgenda[$scope.indexx].name+" of "+$scope.meeting.title+": less than "+timeToAlert+" minutes.");
-						var elapsedTime = Math.round(((new Date()).getTime() - alertDate)/1000);
-						actPointsDuration(elapsedTime);
 					}
  				} 
 
  			}else{
  			$scope.indexx +=1;
  			}
- 			getTotalRemaining();
- 			
- 			
- 		}
- 		$scope.timer = $timeout(crono, 1000);
+
+ 		}else if(negativeTime){
+	 		negativeSeconds-=1;
+	 	}
+ 		getTotalRemaining();
+ 		$scope.$apply();
 
 	 };
-	 crono();
+	 $scope.timer = IntervalService.setInterval(crono, 1000);
 
-	 var cronoNegative = function(){
-	 	if(negativeTime){
-	 		negativeSeconds-=1;
-	 		getTotalRemaining();
-	 		
-	 	}
-	 	$scope.negativeTimer = $timeout(cronoNegative, 1000);
-	 }
-	 cronoNegative();
+
+	 var initTime=new Date().getTime();
 	function refresh(){
+
+		var intNow = new Date().getTime();
+		if (intNow - initTime > 7000) {
+            console.log("I JUST WOKE UP")
+        }
+        initTime = intNow;
 		if(!$scope.doingPut){
 			getMeeting();
 		}else{
@@ -698,9 +697,8 @@ function pasteIntoInput(el, text) {
             "$destroy",
             function( event ) {
 
-                $timeout.cancel( $scope.timer );
+            	IntervalService.clearInterval($scope.timer);
                 $timeout.cancel($scope.timerRefresh);
-      			$timeout.cancel($scope.negativeTimer);
             }
         );
 
@@ -720,52 +718,11 @@ function pasteIntoInput(el, text) {
     	}
     },true);
 
-	 
-
-}]);
-
-
-planfeedControllers.controller('NewMeetingCtrl',['$scope', '$routeParams', 'Mock','Meeting','$location','calendarEventService', function ($scope, $routeParams, Mock,Meeting,$location,calendarEventService){
-
-	var newMeeting = Mock.query();
-	var calendarEvent = calendarEventService.getCalendarEvent();
-	
-	if(calendarEvent!=null){
-
-
-		newMeeting.title=calendarEvent.summary;
-		newMeeting.description=calendarEvent.description;
-
-		var auxDate = new Date(calendarEvent.start.dateTime);
-		newMeeting.date=auxDate.getTime();
-		newMeeting.calendarEventId=calendarEvent.id;
-		newMeeting.creatorEmail=calendarEventService.getEmail();
-		newMeeting.calendarId=calendarEventService.getCalendarId();
-	}
-	Meeting.put(newMeeting).success(function(meet){
-		var meettingLink = "\nMeeting in Plan&Feedback Meeting Tool:\nhttp://pfmeeting.com/#/meeting/"+meet.meetingId;
-		if(calendarEvent!=null){
-			if(calendarEvent.description!=null){ 
-				calendarEvent.description=calendarEvent.description.concat(meettingLink);
-			}else{
-				calendarEvent.description = meettingLink
-			}
-			var request=gapi.client.calendar.events.update({calendarId: calendarEventService.getCalendarId(),eventId:calendarEvent.id,resource:calendarEvent});
-			request.execute(function(response){
-				//console.log(response);
-			});
-
-		}
-
-		$location.url('/meeting/'+ meet.meetingId);
-	}).error(function(response, status){
-
-		$('.ngview').load('partials/error-view.html');
-	});
-
 
 
 }]);
+
+
 
 planfeedControllers.controller('MainCtrl',['$window','$scope', '$routeParams', 'Mock','Meeting','$location', function ($window,$scope, $routeParams, Mock,Meeting,$location){
 	$scope.myInterval = 5000;
@@ -818,11 +775,11 @@ $scope.isSignedIn=false;
 var firstTime=true;
 $scope.isSignedIn = false;
 
-$scope.newMeeting=function(){
+$scope.newMeetingNav=function(){
 	calendarEventService.setCalendarEvent(null);
 	calendarEventService.setEmail(null);
 	calendarEventService.setCalendarId(null);
-	$location.url('/meeting');
+	$scope.newMeeting();
 };
 
 $scope.signIn = function(authResult) {
@@ -935,8 +892,7 @@ $window.renderSignIn = function() {
 	      request.execute(function(resp){
 	    
 	      });
-
-      $location.url('/meeting');
+      $scope.newMeeting();
 
 
     });
@@ -945,7 +901,51 @@ $window.renderSignIn = function() {
  };
    
 
+  $scope.redirectToHome = function() {
+    	 $timeout.cancel( $scope.timer );
+         $timeout.cancel($scope.timerRefresh);
+		 $timeout.cancel($scope.negativeTimer);
+    	 $location.url("/"); 
+	};
+$rootScope.creatingMeeting=false;
+$scope.newMeeting = function(){
+$rootScope.creatingMeeting=true;
+	var newMeeting = Mock.query();
+	var calendarEvent = calendarEventService.getCalendarEvent();
+	
+	if(calendarEvent!=null){
 
+
+		newMeeting.title=calendarEvent.summary;
+		newMeeting.description=calendarEvent.description;
+
+		var auxDate = new Date(calendarEvent.start.dateTime);
+		newMeeting.date=auxDate.getTime();
+		newMeeting.calendarEventId=calendarEvent.id;
+		newMeeting.creatorEmail=calendarEventService.getEmail();
+		newMeeting.calendarId=calendarEventService.getCalendarId();
+	}
+	Meeting.put(newMeeting).success(function(meet){
+		var meettingLink = "\nMeeting in Plan&Feedback Meeting Tool:\nhttp://pfmeeting.com/#/meeting/"+meet.meetingId;
+		if(calendarEvent!=null){
+			if(calendarEvent.description!=null){ 
+				calendarEvent.description=calendarEvent.description.concat(meettingLink);
+			}else{
+				calendarEvent.description = meettingLink
+			}
+			var request=gapi.client.calendar.events.update({calendarId: calendarEventService.getCalendarId(),eventId:calendarEvent.id,resource:calendarEvent});
+			request.execute(function(response){
+				//console.log(response);
+			});
+
+		}
+		$rootScope.creatingMeeting=false;
+		$location.url('/meeting/'+ meet.meetingId);
+	}).error(function(response, status){
+		$rootScope.creatingMeeting=false;
+		$('.ngview').load('partials/error-view.html');
+	});
+}
  
  var CalendarModalCtrl = function ($rootScope, $modalInstance,$window,$scope, $routeParams, Mock,Meeting,$location,calendarEventService) {
  	$scope.emptyEvents=false;
@@ -966,12 +966,6 @@ $window.renderSignIn = function() {
 	    isopen: false
 	  };
 
-
- 
-
-
-
-   
 	  $scope.toggleDropdown = function($event) {
 	    $event.preventDefault();
 	    $event.stopPropagation();
@@ -1031,12 +1025,6 @@ $window.renderSignIn = function() {
   };
 
 
-  $scope.redirectToHome = function() {
-    	 $timeout.cancel( $scope.timer );
-         $timeout.cancel($scope.timerRefresh);
-		 $timeout.cancel($scope.negativeTimer);
-    	 $location.url("/"); 
-	};
 
 
 }]);
