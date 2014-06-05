@@ -45,6 +45,7 @@ planfeedServices.factory('Meeting', function($http){
     planFeedAPI.putStatus=function(meetingId,status){
       return $http.put(baseURL+'meetings/'+new String(meetingId)+'/status', status,{headers: {'Content-Type':'text/plain'}});
     }
+
     return planFeedAPI;
   });
 
@@ -55,6 +56,9 @@ planfeedServices.factory('GoogleService', function($http){
   googleService.postToken=function(email,code){
     return  $http.post(baseURL+'googlerest/token/'+new String(email), code,{headers: {'Content-Type':'text/plain'}});
   }
+  googleService.getChannelId=function(channelId){
+      return $http.put(baseURL+'googlerest/channelid', channelId,{headers: {'Content-Type':'text/plain'}});
+    }
   return googleService;
 
   });

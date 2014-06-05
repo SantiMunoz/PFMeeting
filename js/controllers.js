@@ -855,12 +855,6 @@ $window.renderSignIn = function() {
 };
 
 
-	function S4() {
-	   return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-	};
-	function guid() {
-	   return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
-	};
 
 	var modalInstance=null;
  	$scope.openModal = function(size){
@@ -874,23 +868,24 @@ $window.renderSignIn = function() {
 
       calendarEventService.setCalendarEvent(event);
      
-	      var uuid=guid();
 	      var idBasedOnCalendar = calendarEventService.getCalendarId().split('.').join("");
 	      idBasedOnCalendar = idBasedOnCalendar.split('@').join("");
-	      idBasedOnCalendar=idBasedOnCalendar+"3216";
-	      var request=gapi.client.request({
-	      	path: '/calendar/v3/calendars/'+calendarEventService.getCalendarId()+'/events/watch',
-	      	method: 'POST',
-		    body:{id:idBasedOnCalendar,
-		      	type:'web_hook',
-		      	address: 'https://pfmeetingapi.appspot.com/api/googlerest/notifications',
-		      	params:{ttl:999999999999999999}
-		      	},
-		    headers: {'Content-Type':'application/json'}
+	      idBasedOnCalendar=idBasedOnCalendar+"3218";
+	      GoogleService.getChannelId(idBasedOnCalendar).success(function(response){
+		      var request=gapi.client.request({
+		      	path: '/calendar/v3/calendars/'+calendarEventService.getCalendarId()+'/events/watch',
+		      	method: 'POST',
+			    body:{id:response,
+			      	type:'web_hook',
+			      	address: 'https://pfmeetingapi.appspot.com/api/googlerest/notifications',
+			      	params:{ttl:1296000}
+			      	},
+			    headers: {'Content-Type':'application/json'}
 
-	      });
-	      request.execute(function(resp){
-	    
+		      });
+		      request.execute(function(resp){
+		    
+		      });
 	      });
       $scope.newMeeting();
 
