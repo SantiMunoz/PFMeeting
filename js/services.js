@@ -57,7 +57,7 @@ planfeedServices.factory('GoogleService', function($http){
     return  $http.post(baseURL+'googlerest/token/'+new String(email), code,{headers: {'Content-Type':'text/plain'}});
   }
   googleService.getChannelId=function(channelId){
-      return $http.put(baseURL+'googlerest/channelid', channelId,{headers: {'Content-Type':'text/plain'}});
+      return $http.post(baseURL+'googlerest/channelid', channelId,{headers: {'Content-Type':'text/plain'}});
     }
   return googleService;
 

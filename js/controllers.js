@@ -18,7 +18,7 @@ limitations under the License. */
 var planfeedControllers = angular.module('planfeedControllers', ['ngResource', 'ngRoute','ui.bootstrap']);
 
 
-planfeedControllers.controller('PlanfeedGeneralCtrl',['IntervalService','$scope', '$routeParams', 'Mock','Meeting','$timeout','$interval','$location','$filter','calendarEventService', function (IntervalService,$scope, $routeParams, Mock,Meeting, $timeout,$interval,$location,$filter,calendarEventService){
+planfeedControllers.controller('PlanfeedGeneralCtrl',['$modal','IntervalService','$scope', '$routeParams', 'Mock','Meeting','$timeout','$interval','$location','$filter','calendarEventService', function ($modal,IntervalService,$scope, $routeParams, Mock,Meeting, $timeout,$interval,$location,$filter,calendarEventService){
 
 
 	//notificación cuando queden 3 minutos
@@ -582,11 +582,42 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['IntervalService','$scope'
         $location.path(path);
 	 }
 
+	$scope.generateQR = function(){
+			var modalInstance=null;
+
+ 		modalInstance= $modal.open({
+	      templateUrl: 'partials/qrModal.html',
+	      controller: QrModalCtrl,
+	      size:500
+
+	    });
+
+	    modalInstance.result.then(function (event) {
+
+
+	    });
+
+	};
+	 var QrModalCtrl = function ($rootScope, $modalInstance,$scope, $routeParams) {
+		$scope.qrlink="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http%3A//pfmeeting.com/%23/meeting/"+$routeParams.meetingId;
+
+		$scope.cancel = function () {
+			    $modalInstance.dismiss('cancel');
+			  };
+
+	 }
+
+	 var reCalculatePoints = function(){
+	 	$scope.auxAgenda=$scope.meeting.agenda;
+	 	var elapsedTime = Math.round(((new Date()).getTime() - $scope.meeting.init)/1000);
+		actPointsDuration(elapsedTime);
+	 }
+
 	 $scope.indexx = 0;
 	 $scope.auxPoint = null;
 	 $scope.control=0;
 	 var crono = function(){
- 		
+
 	 	if($scope.auxAgenda[$scope.indexx] && play){
  			$scope.auxPoint = $scope.auxAgenda[$scope.indexx]
  			if($scope.auxPoint.duration>0){
@@ -595,7 +626,11 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['IntervalService','$scope'
  				if($scope.auxAgenda[$scope.indexx].duration ==timeToAlert*60){
  					var sound = $('#notificationAudio')[0];
  					sound.load();
-    				sound.play();
+ 					
+    				var playAlert=function(){
+    						sound.play();
+    				}
+    				$timeout(playAlert,500);
  					if(!onMobileDevice){
 	 					if (Notification && Notification.permission === "granted") { 						
 					        var n = new Notification("Alert!", {body: $scope.auxAgenda[$scope.indexx].name+" of "+$scope.meeting.title+": less than "+timeToAlert+" minutes.",
@@ -624,14 +659,9 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['IntervalService','$scope'
 	 $scope.timer = IntervalService.setInterval(crono, 1000);
 
 
-	 var initTime=new Date().getTime();
+	
 	function refresh(){
 
-		var intNow = new Date().getTime();
-		if (intNow - initTime > 7000) {
-            console.log("I JUST WOKE UP")
-        }
-        initTime = intNow;
 		if(!$scope.doingPut){
 			getMeeting();
 		}else{
@@ -872,6 +902,7 @@ $window.renderSignIn = function() {
 	      idBasedOnCalendar = idBasedOnCalendar.split('@').join("");
 	      idBasedOnCalendar=idBasedOnCalendar+"3218";
 	      GoogleService.getChannelId(idBasedOnCalendar).success(function(response){
+	      	console.log(response);
 		      var request=gapi.client.request({
 		      	path: '/calendar/v3/calendars/'+calendarEventService.getCalendarId()+'/events/watch',
 		      	method: 'POST',
