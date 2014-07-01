@@ -216,7 +216,7 @@ planfeedControllers.controller('PlanfeedGeneralCtrl',['$modal','IntervalService'
 				if(!angular.equals($scope.auxAgenda[i].pointId,$scope.meeting.agenda[i].pointId )){
 					$scope.auxAgenda[i] = $scope.meeting.agenda[i];
 				}else{
-					if(!angular.equals($scope.auxAgenda[i].comment,$scope.meeting.agenda[i].comment ))
+					if(!angular.equals($scope.auxAgenda[i].comment,$scope.meeting.agenda[i].comment ) && !$scope.auxAgenda[i].open)
 						
 						$scope.auxAgenda[i].comment=$scope.meeting.agenda[i].comment;
 				}
