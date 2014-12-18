@@ -1,4 +1,4 @@
-# PFMeetingAPI
+# PFMeeting
 
 ## 1.Introducción
 Plan&amp;Feedback Meeting Tool es una herramienta pensada para optimizar la gestión de una reunión, desde la fase de planificación hasta la redacción de la acta, pasando por el control del tiempo durante la reunión.
